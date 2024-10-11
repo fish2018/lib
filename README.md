@@ -1,4 +1,7 @@
 # 免费机场订阅，网络搜集，仅限于学习研究
+
+## 不要star，不要fork
+
 ```
 https://pp.dcd.one/clash/config
 ```
