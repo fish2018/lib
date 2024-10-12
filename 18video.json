@@ -1,0 +1,21 @@
+{
+	"recommend": "视频",
+	"class": [{
+		"type_id": "video",
+		"type_name": "video"
+	}, {
+		"type_id": "mp4",
+		"type_name": "mp4"
+	}, {
+		"type_id": "avi",
+		"type_name": "avi"
+	}, {
+		"type_id": "mov",
+		"type_name": "mov"
+	}, {
+		"type_id": "rmvb",
+		"type_name": "rmvb"
+	}],
+	"jx": 0,
+	"parse": 0
+}
