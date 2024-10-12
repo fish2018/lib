@@ -45,9 +45,6 @@ https://trojan.trevely.us.kg/Trevely?sub
 http://tts.ss5.xyz
 ```
 ```
-https://config-config-ytevxzmbdb.cn-hangzhou.fcapp.run
-```
-```
 https://gist-collect.fqzs.workers.dev/clach.yml
 ```
 ```
