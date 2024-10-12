@@ -54,7 +54,7 @@ https://gist-collect.fqzs.workers.dev/clach.yml
 https://www.xrayvip.com/free.yaml
 ```
 ```
-https://sub.mxlweb.xyz/new
+https://mxlsub.me/free
 ```
 ```
 https://imperialb.in/r/ununbd0v
