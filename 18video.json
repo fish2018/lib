@@ -1,8 +1,8 @@
 {
-	"recommend": "视频",
+	"recommend": "video",
 	"class": [{
-		"type_id": "video",
-		"type_name": "video"
+		"type_id": "视频",
+		"type_name": "视频"
 	}, {
 		"type_id": "mp4",
 		"type_name": "mp4"
