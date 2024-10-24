@@ -33,9 +33,6 @@ https://proxypool.link/clash/config
 https://proxy.crazygeeky.com/clash/config
 ```
 ```
-https://gitdl.cn/https://raw.githubusercontent.com/snakem982/proxypool/main/source/clash-meta.yaml
-```
-```
 https://gitdl.cn/https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/list.yml
 ```
 ```
@@ -70,12 +67,6 @@ https://www.xrayvip.com/free.yaml
 ```
 ```
 https://mxlsub.me/free
-```
-```
-https://clash.llleman.com/clach.yml
-```
-```
-https://sub.reajason.eu.org/clash.yaml
 ```
 ```
 https://tt.vg/freeclash
