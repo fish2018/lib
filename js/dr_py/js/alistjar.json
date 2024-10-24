@@ -1,0 +1,155 @@
+{
+    "drives": [
+        {
+            "name": "网盘群友不忘初心",
+            "search": true,
+            "searchable": true,
+            "server": "http://qqpyf.vip/",
+            "login": {
+                "username": "qq",
+                "password": "123456"
+            }
+        },
+        {
+            "name": "群友H盘",
+            "server": "http://36.140.110.103:10277/",
+            "login": {
+                "username": "qq",
+                "password": "123456"
+            }
+        },
+        {
+            "name": "盒子",
+            "search": true,
+            "searchable": true,
+            "server": "http://192.168.31.239:5244/"
+        },
+        {
+            "name": "手机1",
+            "search": true,
+            "searchable": true,
+            "server": "http://192.168.31.177:5244/"
+        },{
+            "name": "平板",
+            "search": true,
+            "searchable": true,
+            "server": "http://192.168.31.240:5244/"
+        },
+        {
+            "name": "手机2",
+            "search": true,
+            "searchable": true,
+            "server": "http://127.0.0.1:5245/"
+        },
+        {
+            "name": "Ecve",
+            "server": "https://pan.ecve.cn/"
+        },
+        {
+            "name": "🌱小雅备用",
+            "server": "http://60.211.206.83:7006/"
+        },
+        {
+            "name": "💃Cloud-6",
+            "server": "https://jinricp.glitch.me/"
+        },
+        {
+            "name": "罗汉果",
+            "server": "http://我艹.退学.com:55153"
+        },
+        {
+            "name": "🌱潇洒个人",
+            "server": "https://alist.azad.asia/"
+        },
+        {
+            "name": "🦆托盘",
+            "server": "https://pan.mediy.cn/"
+        },
+        {
+            "name": "🌱Arley",
+            "server": "http://45.85.77.23:5244/"
+        },
+        {
+            "name": "🌱鹏程",
+            "server": "https://pan.pengcheng.team/"
+        },
+        {
+            "name": "🌱星梦",
+            "server": "https://pan.bashroot.top"
+        },
+        {
+            "name": "🌱弱水分享",
+            "server": "http://shicheng.wang:555/"
+        },
+        {
+            "name": "🌱学习",
+            "server": "http://45.85.77.23:5244/"
+        },
+        {
+            "name": "🌱小陈",
+            "server": "https://pan.oldming.top/"
+        },
+        {
+            "name": "🌱动漫盘",
+            "server": "http://pan.smjc.cc"
+        },
+        {
+            "name": "🌱神秘小盘",
+            "server": "https://yun.llzz.top/"
+        },
+        {
+            "name": "🌱X影院",
+            "server": "http://124.70.202.159:5678/"
+        },
+        {
+            "name": "🌱姹莱坞",
+            "server": "http://45.85.77.23:5244/"
+        },
+        {
+            "name": "🌱乌云盘",
+            "server": "http://124.70.137.72:5678/"
+        },
+        {
+            "name": "🌱神族九帝",
+            "server": "https://alist.shenzjd.com"
+        },
+        {
+            "name": "🌱迅维云盘",
+            "server": "https://pan.xwbeta.com"
+        },
+        {
+            "name": "🌱共享盘",
+            "server": "https://pan.oldming.top/"
+        },
+        {
+            "name": "🌱梓凌妙妙",
+            "server": "https://zi0.cc/"
+        },
+        {
+            "name": "9T",
+            "server": "https://drive.9t.ee",
+            "params": [
+                {
+                    "path": "/OneDrive",
+                    "pass": "dooglu"
+                },
+                {
+                    "path": "/115Cloud",
+                    "pass": "dooglu"
+                }
+            ]
+        },
+        {
+            "name": "本地小雅",
+            "search": true,
+            "searchable": true,
+            "server": "http://192.168.31.118:5678/"
+        },
+        {
+            "name": "远程alist",
+            "search": true,
+            "searchable": true,
+            "server": "https://86bd5a7f-1d7b-4fb9-963a-297af29c719b-00-21snn785l1p4z.kirk.replit.dev/"
+        }
+    ]
+}

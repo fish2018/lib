@@ -1,0 +1,20 @@
+{
+    "发布页地址": "https://22wa.github.io/22vda/",
+    "主页url": "https://v1.22ba6.top/",
+    "请求头": "手机",
+    "直接播放": "1",
+    "数组": "<dl>&&</dl>",
+    "标题": "title=\"&&\"",
+    "图片": "data-src=\"&&\"",
+    "副标题": "",
+    "链接": "href=\"&&\"",
+    "线路数组": "",
+    "播放数组": "",
+    "免嗅": "0",
+    "嗅探词": "index.m3u8#.mp4",
+    "搜索url": "https://v1.22ba6.top/index.php/vod/search/page/{pg}/wd/{wd}.html",
+    "分类url": "https://v1.22ba6.top/index.php/vod/type/id/{cateId}/page/{catePg}.html",
+    "分类数组": "<dd>&&</dd>",
+    "分类标题": ">&&</a",
+    "分类ID": "href=\"/index.php/vod/type/id/&&.html\""
+}
