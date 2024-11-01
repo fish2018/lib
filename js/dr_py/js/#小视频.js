@@ -1,0 +1,28 @@
+var rule ={
+            title: '小视频',
+            host: 'https://www.nzxsp6.skin/cn/home/web/',
+            url: '/index.php/vod/show/id/fyclass/page/fypage.html',
+            searchUrl: 'https://www.nzxsp6.skin/cn/home/web/index.php/vod/search/page/fypage/wd/**.html',
+            class_parse: '.sitenav li;a&&Text;a&&href;.*/(.*?).html',
+            searchable: 2,
+            quickSearch: 0,
+            filterable: 0,
+            headers: {
+                'User-Agent': 'MOBILE_UA',
+            },
+            play_parse: true,
+            lazy: '',
+            limit: 6,
+            推荐: '*',
+            double: true,
+            一级: 'body&&.s-tab-main&&ul&&li;a&&title;img&&src;.hint&&Text;a&&href',
+            二级: {
+                title: 'h2&&Text',
+                img: 'img&&src',
+                desc: '',
+                content: '.single-strong',
+                tabs: '.juji&&li:not(:contains(CkPlayer-H5播放器))',
+                lists: '.juji-bd:eq(#id) li',
+            },
+            搜索: '.s-tab-main&&li;.js-tongjic&&title;img&&src;.hint&&Text;a&&href;.pay&&Text',
+        }
