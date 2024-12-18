@@ -1,0 +1,28 @@
+var rule = {
+  title: '哈皮影视',
+  host: 'https://hapihd.com',
+  url: '/index.php/vod/show/id/fyclass/page/fypage.html',
+  searchUrl: '/index.php/vod/search/page/fypage/wd/**.html',
+  searchable: 2,
+  quickSearch: 0,
+  filterable: 0,
+  headers: {
+    'User-Agent': 'MOBILE_UA',
+  },
+  class_parse: '.navbar-items li:lt(7);a&&Text;a&&href;/id/(\\w+).html',
+  play_parse: true,
+  lazy: '',
+  limit: 6,
+  推荐: '.tab-list.active;a.module-poster-item.module-item;.module-poster-item-title&&Text;.lazyload&&data-original;.module-item-note&&Text;a&&href',
+  double: true,
+  一级: 'body a.module-poster-item.module-item;a&&title;.lazyload&&data-original;.module-item-note&&Text;a&&href',
+  二级: {
+    title: 'h1&&Text;.module-info-tag-link:eq(2)&&Text',
+    img: '.lazyload&&data-original',
+    desc: '.module-info-item-content:eq(-1)&&Text;.module-info-tag-link&&Text;.module-info-tag-link:eq(1)&&Text;.module-info-item-content:eq(2)&&Text;.module-info-item-content&&Text',
+    content: '.module-info-introduction&&Text',
+    tabs: '#y-playList&&div',
+    lists: '.module-play-list:eq(#id) a',
+  },
+  搜索: 'body .module-item;.module-card-item-title&&Text;.lazyload&&data-original;.module-item-note&&Text;a&&href;.module-info-item-content&&Text',
+}
