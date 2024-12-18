@@ -160,7 +160,7 @@ class TGForwarder:
             if try_join:
                 await self.client(JoinChannelRequest(chat_name))
             chat = await self.client.get_entity(chat_name)
-            messages = self.client.iter_messages(chat, limit=limit, reverse=True)
+            messages = self.client.iter_messages(chat, limit=limit, reverse=False)
             async for message in messages:
                 jumpLink = await self.redirect_url(message)
                 self.random_wait(200, 1000)
