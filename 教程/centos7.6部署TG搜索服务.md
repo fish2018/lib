@@ -13,6 +13,10 @@ timedatectl set-timezone Asia/Shanghai
 mkdir -p /home/{data,jobs/{archive,webs/{z,p},TGForwarder,PG/p,ZX/z},work/logs}
 mount --bind  /home/jobs/ZX/z/ /home/jobs/webs/z/
 mount --bind  /home/jobs/PG/p/ /home/jobs/webs/p/
+ln -s /home/jobs /root/jobs
+ln -s /home/data /root/data
+ln -s /home/work /root/work
+ln -s /home/work/logs /root/logs
 ```
 
 ## 配置yum源
@@ -118,6 +122,7 @@ crontab -e
 0 * * * * /home/jobs/TGForwarder/tgforward.sh
 */10 * * * * /home/jobs/PG/sync-pg.sh
 */13 * * * * /home/jobs/ZX/sync-zx.sh
+*/50 * * * * supervisorctl restart tg
 ```
 
 ## 配置nginx
