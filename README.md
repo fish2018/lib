@@ -4,23 +4,14 @@
 
 ## 家庭观影
 
-频道
 ```
-tgsearchers,Quark_Share_Channel,Aliyundrive_Share_Channel,oneonefivewpfx,hao115,guaguale115,Channel_Shares_115,dianyingshare,XiangxiuNB,yunpanpan,kuakeyun,zaihuayun,Quark_Movies,vip115hot,yunpanshare,shareAliyun,ikiviyyp,alyp_1,quanziyuanshe,alyp_4K_Movies, Aliyun_4K_Movies
-```
-群组
-```
-Mbox115, wanwansubchat, alypzyhzq, shares_115
+tgsearchers,alyp_1,guaguale115,hao115,shareAliyun,Aliyun_4K_Movies,ucpanpan,ucquark,ydypzyfx,tianyi_pd2
 ```
 
 ## 18x
-频道
+
 ```
-avab01, zuisewang, fuligege4, CosMM18, TPJPCP
-```
-群组
-```
-tgsearchers18,QiangJAv, FC2PPV91, avwmjav, avgc5200, madoucn, TGJAV, SeseAnime, AVWUMAYUANPIAN, ribenseyuge1, sdafe4, pikpakziyuan, avpush, wumaAV, wanninai, QBYFCB_VIP, bbw8562, zyfx_0315, jpccav, xpzhenshi, nanrenbang666, PornXOS, wumaav, zhenshipaishe, IPX_AV, cilitu, ljqqyy, madou_77, wuma_liuchu, cctav, ppg1314, CRAVWM12, MDFL88, madoua821, SanJiPian_HanGuo, javdb91, sexlife520
+CosMM18,avpush,ribenseyuge1,cilitu,cctav,ppg1314,avab01,SeseAnime,QiangJAv,avwmjav,TGJAV,AVWUMAYUANPIAN,jpccav,PornXOS,CRAVWM12,MDFL88,madoua821,SanJiPian_HanGuo,sexlife520,CCCTAV
 ```
 
 # 免费壁纸api
