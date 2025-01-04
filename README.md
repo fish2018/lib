@@ -41,6 +41,13 @@ https://api.mir6.com/api/ecybz
 <table>
     <tr>
         <td>1</td>
+        <td></td>
+        <td><a href="https://chat.deepseek.com/" target="_blank">DeepSeek</a></td>
+        <td>可以帮你写代码、读文件、写作各种创意内容</td>
+        <td><a href="https://chat.deepseek.com/" target="_blank">🔗</a></td>
+    </tr> 
+    <tr>
+        <td>1</td>
         <td><img src="https://st2.ai55.cc/1/2eb9aa83641897ae.webp" alt="favicon" style="height: 20px !important;width: 20px !important;"></td>
         <td><a href="https://ai.wendabao.net/#/?role=PLUS" target="_blank">AI问答宝</a></td>
         <td>免费GPT-4及ChatGPT镜像站，支持o1模型</td>
