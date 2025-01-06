@@ -41,7 +41,7 @@ https://api.mir6.com/api/ecybz
 <table>
     <tr>
         <td>1</td>
-        <td></td>
+        <td><div style="width: 20px; height: 20px; overflow: hidden;"><img src="https://raw.githubusercontent.com/deepseek-ai/DeepSeek-VL2/refs/heads/main/images/logo.svg" style="width: 40%; height: 40%; object-fit: cover; object-position: left;" /></div></td>
         <td><a href="https://chat.deepseek.com/" target="_blank">DeepSeek</a></td>
         <td>可以帮你写代码、读文件、写作各种创意内容</td>
         <td><a href="https://chat.deepseek.com/" target="_blank">🔗</a></td>
