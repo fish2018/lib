@@ -110,7 +110,8 @@ supervisorctl start all
 ```
 
 ## TG影视资源转发脚本
-[上传脚本到/home/jobs/TGForwarder](https://github.com/fish2018/lib/tree/main/教程/deploy/home/jobs/TGForwarder)
+[上传脚本到/home/jobs/TGForwarder](https://github.com/fish2018/lib/tree/main/教程/deploy/home/jobs/TGForwarder)  
+最新脚本参考项目[TGForwarder](https://github.com/fish2018/TGForwarder)  
 ```
 cd /home/jobs/TGForwarder
 pip3 install -r requirements.txt
