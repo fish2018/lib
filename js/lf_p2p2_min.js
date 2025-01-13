@@ -1,6 +1,6 @@
-import _0x390aa4 from 'assets://lib/cheerio.min.js';
-import 'assets://lib/crypto-js.js';
-import { gbkTool } from 'assets://lib/gbk.js';
+import _0x390aa4 from 'https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/js/dr_py/libs/cheerio.min.js';
+import 'https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/js/dr_py/libs/crypto-js.js';
+import { gbkTool } from 'https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/js/dr_py/libs/gbk.js';
 const _0x12b93f = '';
 const _0x3987f7 = {
     'pgFail': [],
