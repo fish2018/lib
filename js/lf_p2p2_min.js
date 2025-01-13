@@ -132,7 +132,7 @@ async function _0xf39aba(_0x2c2e28, _0x13f856, _0x39a575) {
                 _0x39a575 > 1 && _0x4c2007.fail[_0x2c2e28] && _0x39a575 >= _0x4c2007.fail[_0x2c2e28].fpg && (_0x5baeca = undefined);
         }
         let _0x2b6983 = {
-            'url': 'http://127.0.0.1:10079/p/0/proxy/https://javmulu.net/index/search.html?name=' + _0x500100 + '&page=' + _0x39a575,
+            'url': 'https://javmulu.net/index/search.html?name=' + _0x500100 + '&page=' + _0x39a575,
             'options': {
                 'headers': {
                     'Referer': 'https://javmulu.net/',
@@ -151,7 +151,7 @@ async function _0xf39aba(_0x2c2e28, _0x13f856, _0x39a575) {
         let _0xe90b18 = '';
         _0x2c2e28.match(/(\w+-?\d+)\s?/m) ? _0x2c2e28.match(/(\w+-\d+)\s?/m) ? _0xe90b18 = _0x2c2e28.match(/(\w+-\d+)\s?/m)[1] : _0xe90b18 = _0x2c2e28.split(' ')[1] : _0xe90b18 = _0x2c2e28;
         let _0x50115a = {
-            'url': 'http://127.0.0.1:10079/p/0/proxy/https://missav.ws/cn/search/' + _0xe90b18 + '?page=' + _0x39a575,
+            'url': 'https://missav.ws/cn/search/' + _0xe90b18 + '?page=' + _0x39a575,
             'options': {
                 'headers': {
                     'Referer': 'https://missav.ws/',
@@ -562,9 +562,9 @@ class _0x227019 {
         let _0x59a7d9 = _0x3e989f('.list-view article');
         _0x59a7d9.each(function () {
             _0x16afaf.push({
-                'vod_id': 'http://127.0.0.1:10079/p/0/proxy/https://javmulu.net' + _0x3e989f('a', this).attr('href'),
+                'vod_id': 'https://javmulu.net' + _0x3e989f('a', this).attr('href'),
                 'vod_name': _0x3e989f('.card-footer h5.text-secondary', this).text(),
-                'vod_pic': _0x1df164(_0x3e989f('.card-body img', this).attr('src'), 'http://127.0.0.1:10079/p/0/proxy/https://javmulu.net/'),
+                'vod_pic': _0x1df164(_0x3e989f('.card-body img', this).attr('src'), 'https://javmulu.net/'),
                 'vod_remarks': _0x3e989f('.card-footer .text-primary', this).text() + ' [JAVMULU]',
                 'vod_tag': 'folder'
             });
@@ -579,7 +579,7 @@ class _0x227019 {
         }).content;
         let _0x7acc5c = _0x390aa4.load(_0x4aa6ea);
         let _0x4547af = _0x7acc5c('h1.h4').text();
-        let _0xc47f0f = _0x1df164(_0x7acc5c('.video-view img:eq(0)').attr('src'), 'http://127.0.0.1:10079/p/0/proxy/https://javmulu.net/');
+        let _0xc47f0f = _0x1df164(_0x7acc5c('.video-view img:eq(0)').attr('src'), 'https://javmulu.net/');
         let _0x56193a = _0x7acc5c('.list-unstyled.video-info li:eq(1)').text().split(':')[1].split(' ')[0];
         let _0x345bca = '';
         let _0x17fe51 = _0x7acc5c('.card-footer.text-center').text().trim().replace(/\n/, '');
@@ -625,7 +625,7 @@ class _0x231510 {
             _0x42944b.push({
                 'vod_id': _0x1a374e('a:eq(0)', this).attr('href'),
                 'vod_name': _0x1a374e('a.text-secondary', this).text(),
-                'vod_pic': _0x1df164(_0x1a374e('a img', this).attr('data-src'), 'http://127.0.0.1:10079/p/0/proxy/https://missav.ws/'),
+                'vod_pic': _0x1df164(_0x1a374e('a img', this).attr('data-src'), 'https://missav.ws/'),
                 'vod_remarks': _0x1a374e('span.absolute.right-1', this).text() + ' [MissAV]',
                 'vod_tag': 'folder'
             });
@@ -657,7 +657,7 @@ class _0x231510 {
         }
         _0x5e8b4d = _0x5e8b4d.replace(/^\$\$\$/, '');
         _0x2afd87 = _0x2afd87.replace(/^\$\$\$/, '');
-        let _0x50685b = _0x1df164(_0x4973a2('[property="og:image"]').attr('content'), 'http://127.0.0.1:10079/p/0/proxy/https://missav.ws/');
+        let _0x50685b = _0x1df164(_0x4973a2('[property="og:image"]').attr('content'), 'https://missav.ws/');
         let _0x366b27 = '';
         let _0x2f6484 = '';
         let _0x39d0e9 = '日本';
