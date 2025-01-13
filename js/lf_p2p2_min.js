@@ -1,6 +1,6 @@
-import _0x390aa4 from 'assets://js/lib/cheerio.min.js';
-import 'assets://js/lib/crypto-js.js';
-import { gbkTool } from 'assets://js/lib/gbk.js';
+import _0x390aa4 from 'assets://lib/cheerio.min.js';
+import 'assets://lib/crypto-js.js';
+import { gbkTool } from 'assets://lib/gbk.js';
 const _0x12b93f = '';
 const _0x3987f7 = {
     'pgFail': [],
