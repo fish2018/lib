@@ -151,10 +151,10 @@ async function _0xf39aba(_0x2c2e28, _0x13f856, _0x39a575) {
         let _0xe90b18 = '';
         _0x2c2e28.match(/(\w+-?\d+)\s?/m) ? _0x2c2e28.match(/(\w+-\d+)\s?/m) ? _0xe90b18 = _0x2c2e28.match(/(\w+-\d+)\s?/m)[1] : _0xe90b18 = _0x2c2e28.split(' ')[1] : _0xe90b18 = _0x2c2e28;
         let _0x50115a = {
-            'url': 'https://missav789.com/cn/search/' + _0xe90b18 + '?page=' + _0x39a575,
+            'url': 'https://missav.ws/cn/search/' + _0xe90b18 + '?page=' + _0x39a575,
             'options': {
                 'headers': {
-                    'Referer': 'https://missav789.com/',
+                    'Referer': 'https://missav.ws/',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
                 }
             }
@@ -355,7 +355,7 @@ function _0x38865a(_0x57e52a, _0x8b5001, _0x22dfb3) {
     let _0x37581f = '';
     let _0x5407f0 = '';
     if (_0x8b5001.match(/akamai-content-network/m)) {
-        _0x37581f = JSON.stringify({ 'Referer': 'https://missav789.com/' });
+        _0x37581f = JSON.stringify({ 'Referer': 'https://missav.ws/' });
     }
     _0xde8dfb = {
         'parse': '0',
@@ -625,7 +625,7 @@ class _0x231510 {
             _0x42944b.push({
                 'vod_id': _0x1a374e('a:eq(0)', this).attr('href'),
                 'vod_name': _0x1a374e('a.text-secondary', this).text(),
-                'vod_pic': _0x1df164(_0x1a374e('a img', this).attr('data-src'), 'https://missav789.com/'),
+                'vod_pic': _0x1df164(_0x1a374e('a img', this).attr('data-src'), 'https://missav.ws/'),
                 'vod_remarks': _0x1a374e('span.absolute.right-1', this).text() + ' [MissAV]',
                 'vod_tag': 'folder'
             });
@@ -657,7 +657,7 @@ class _0x231510 {
         }
         _0x5e8b4d = _0x5e8b4d.replace(/^\$\$\$/, '');
         _0x2afd87 = _0x2afd87.replace(/^\$\$\$/, '');
-        let _0x50685b = _0x1df164(_0x4973a2('[property="og:image"]').attr('content'), 'https://missav789.com/');
+        let _0x50685b = _0x1df164(_0x4973a2('[property="og:image"]').attr('content'), 'https://missav.ws/');
         let _0x366b27 = '';
         let _0x2f6484 = '';
         let _0x39d0e9 = '日本';
@@ -1223,7 +1223,7 @@ class _0x52f21c {
 }
 const _0x4c2007 = new _0x326730('https://avmoo.cfd/cn/');
 const _0x3796cb = new _0x227019('https://javmulu.net/');
-const _0x2d5787 = new _0x231510('https://missav789.com/');
+const _0x2d5787 = new _0x231510('https://missav.ws/');
 const _0x11eff6 = new _0x2b7842('https://www.mp4us.com/');
 const _0x522eb9 = new _0x3d9a2c('https://www.66ss.org/');
 const _0x3c1fc6 = new _0x31b9c5('https://www.kuba222.com/');
