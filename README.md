@@ -11,7 +11,7 @@ tgsearchers,alyp_1,guaguale115,hao115,shareAliyun,Aliyun_4K_Movies,ucpanpan,ucqu
 ## 18x
 
 ```
-CosMM18,avpush,ribenseyuge1,cilitu,cctav,ppg1314,avab01,SeseAnime,QiangJAv,avwmjav,TGJAV,AVWUMAYUANPIAN,jpccav,PornXOS,CRAVWM12,MDFL88,madoua821,SanJiPian_HanGuo,sexlife520,CCCTAV
+CosMM18,avpush,ribenseyuge1,cilitu,cctav,ppg1314,avab01,SeseAnime,QiangJAv,missavv,avwmjav,TGJAV,AVWUMAYUANPIAN,jpccav,PornXOS,CRAVWM12,MDFL88,madoua821,SanJiPian_HanGuo,sexlife520,CCCTAV,AVnew
 ```
 
 # 免费壁纸api
