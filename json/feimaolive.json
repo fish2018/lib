@@ -1,5 +1,4 @@
 [
-	{"name":"最强国内直播","url":"http://127.0.0.1:10079/c/3600/null/http://127.0.0.1:35456/tv.m3u"},
 	{"name": "天美传媒816", "url": "http://127.0.0.1:10079/c/3600/proxy/https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/txt/天美传媒816.txt"},
 	{"name": "果冻传媒816", "url": "http://127.0.0.1:10079/c/3600/proxy/https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/txt/果冻传媒816.txt"},	
 	{"name": "麻豆传媒816", "url": "http://127.0.0.1:10079/c/3600/proxy/https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/txt/麻豆传媒816.txt"},	
