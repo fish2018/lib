@@ -6,7 +6,6 @@ import re
 import sys
 from pyquery import PyQuery as pq
 from base64 import b64decode, b64encode
-from requests import Session
 sys.path.append('..')
 from base.spider import Spider
 
@@ -14,8 +13,6 @@ from base.spider import Spider
 class Spider(Spider):
 
     def init(self, extend=""):
-        self.session = Session()
-        self.session.headers.update(self.headers)
         pass
 
     def getName(self):
@@ -143,12 +140,10 @@ class Spider(Spider):
             tid=tid.split('click_')[-1]
             if pg=='1':
                 hdata=self.getpq(tid)
-                self.token=hdata('#searchInput').attr('data-token')
-                vdata = self.getlist(hdata('#videoPlaylist .pcVideoListItem .phimage'))
-            else:
-                tid=tid.split('playlist/')[-1]
-                data=self.getpq(f'/playlist/viewChunked?id={tid}&token={self.token}&page={pg}')
-                vdata=self.getlist(data('.pcVideoListItem .phimage'))
+                self.token=hdata('.searchInput').attr('data-token')
+            tid=tid.split('playlist/')[-1]
+            data=self.getpq(f'/playlist/viewChunked?id={tid}&token={self.token}&page={pg}')
+            vdata=self.getlist(data('.pcVideoListItem .phimage'))
         elif 'director_click' in tid:
             tid=tid.split('click_')[-1]
             data=self.getpq(f'{tid}/videos?page={pg}')
@@ -228,14 +223,9 @@ class Spider(Spider):
                 'vod_name': i('a').attr('title'),
                 'vod_pic': i('img').attr('src'),
                 'vod_remarks': i('.bgShadeEffect').text() or i('.duration').text(),
-                'style': {'ratio': 1.33, 'type': 'rect'}
             })
         return vlist
 
-    def getpq(self, path):
-        try:
-            response = self.session.get(f'{self.host}{path}')
-            return pq(self.cleanText(response.content.decode('utf-8')))
-        except Exception as e:
-            print(f"请求失败: , {str(e)}")
-            return None
+    def getpq(self,path):
+        data=self.fetch(f'{self.host}{path}', headers=self.headers).text
+        return pq(self.cleanText(data))
