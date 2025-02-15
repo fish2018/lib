@@ -30,7 +30,7 @@ class Spider(Spider):
     def destroy(self):
         pass
 
-    host = "http://127.0.0.1:10079/p/0/127.0.0.1:10172/https://cn.pornhub.com"
+    host = "http://127.0.0.1:10079/p/0/127.0.0.1:10172/https://www.pornhub.com"
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36',
