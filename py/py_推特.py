@@ -14,6 +14,11 @@ from base.spider import Spider
 
 
 class Spider(Spider):
+    def __init__(self):
+        self.proxies = {
+            'http': 'http://127.0.0.1:10172',
+            'https': 'http://127.0.0.1:10172'
+        }
 
     def getName(self):
         return "tuit"
@@ -79,7 +84,7 @@ class Spider(Spider):
         return henda
 
     def homeContent(self, filter):
-        data = self.fetch(f'{self.host}/api/video/classifyList', headers=self.headers()).json()['encData']
+        data = self.fetch(f'{self.host}/api/video/classifyList', proxies=self.proxies, headers=self.headers()).json()['encData']
         data1 = self.aes(data)
         result = {'filters': {"1": [{"key": "fl", "name": "分类",
                                      "value": [{"n": "最近更新", "v": "1"}, {"n": "最多播放", "v": "2"},
@@ -125,7 +130,7 @@ class Spider(Spider):
             path = f'/api/video/queryPersonVideoByType?pageSize=20&page={pg}&userId={tid.replace("click", "")}'
         if tid == 'jx':
             path = f'/api/video/getRankVideos?pageSize=20&page={pg}&type={extend.get("type", "1")}'
-        data = self.fetch(f'{self.host}{path}', headers=self.headers()).json()['encData']
+        data = self.fetch(f'{self.host}{path}',proxies=self.proxies, headers=self.headers()).json()['encData']
         data1 = self.aes(data)['data']
         result = {}
         videos = []
