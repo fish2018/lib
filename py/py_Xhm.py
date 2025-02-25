@@ -18,10 +18,10 @@ class Spider(Spider):
         self.session = Session()
         self.session.headers.update(self.headers)
         # 设置代理
-        # self.proxies = {
-        #     'http': 'http://127.0.0.1:10172',
-        #     'https': 'http://127.0.0.1:10172'
-        # }
+        self.proxies = {
+            'http': 'http://127.0.0.1:10172',
+            'https': 'http://127.0.0.1:10172'
+        }
         # self.session.proxies.update(self.proxies)
         self.proxies = {}
         if self.is_port_open('127.0.0.1', 1072):
