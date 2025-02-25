@@ -38,7 +38,7 @@ class Spider(Spider):
     def destroy(self):
         pass
 
-    host = 'https://lulu-api-92mizw.jcdwn.com'
+    host = 'https://b9jaf1.lqesy.cn'
 
     headers = {
         'User-Agent': 'okhttp/4.11.0',
