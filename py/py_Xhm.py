@@ -3,6 +3,7 @@
 # by嗷呜
 import json
 import sys
+import socket
 from base64 import b64decode, b64encode
 from pyquery import PyQuery as pq
 from requests import Session
@@ -38,6 +39,18 @@ class Spider(Spider):
         if self.proxies:  # 如果检测到可用端口，则应用代理
             self.session.proxies.update(self.proxies)
         pass
+
+    def is_port_open(self, host, port):
+        """检测指定主机和端口是否开放"""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)  # 设置超时时间为1秒
+        try:
+            result = sock.connect_ex((host, port))
+            return result == 0  # 返回0表示端口开放
+        except Exception:
+            return False
+        finally:
+            sock.close()
 
     def getName(self):
         pass
