@@ -8,8 +8,7 @@ from pyquery import PyQuery as pq
 from requests import Session
 sys.path.append('..')
 from base.spider import Spider
-import os
-import subprocess
+import socket
 
 class Spider(Spider):
 
@@ -25,12 +24,12 @@ class Spider(Spider):
         # }
         # self.session.proxies.update(self.proxies)
         self.proxies = {}
-        if self.is_port_open(1072):
+        if self.is_port_open('127.0.0.1', 1072):
             self.proxies = {
                 'http': 'http://127.0.0.1:1072',
                 'https': 'http://127.0.0.1:1072'
             }
-        elif self.is_port_open(10172):
+        elif self.is_port_open('127.0.0.1', 10172):
             self.proxies = {
                 'http': 'http://127.0.0.1:10172',
                 'https': 'http://127.0.0.1:10172'
@@ -39,22 +38,17 @@ class Spider(Spider):
             self.session.proxies.update(self.proxies)
         pass
 
-    def is_port_open(self, port):
-        """检查指定端口是否在本机打开"""
-        if os.name == 'nt':  # Windows 系统
-            cmd = f'netstat -an | findstr :{port}'
-            try:
-                output = subprocess.check_output(cmd, shell=True, text=True)
-                return f'127.0.0.1:{port}' in output or f'0.0.0.0:{port}' in output
-            except subprocess.CalledProcessError:
-                return False
-        else:  # Linux/Unix 系统
-            cmd = f'netstat -tuln | grep :{port}'
-            try:
-                output = subprocess.check_output(cmd, shell=True, text=True)
-                return f'127.0.0.1:{port}' in output or f'0.0.0.0:{port}' in output
-            except subprocess.CalledProcessError:
-                return False
+    def is_port_open(self, host, port):
+        """使用 socket 检查指定主机和端口是否开放"""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)  # 设置 1 秒超时
+        try:
+            result = sock.connect_ex((host, port))
+            return result == 0  # 返回 0 表示端口开放
+        except Exception:
+            return False
+        finally:
+            sock.close()
         
     def getName(self):
         pass
