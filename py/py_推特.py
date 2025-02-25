@@ -69,7 +69,7 @@ class Spider(Spider):
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36;SuiRui/twitter/ver=1.3.4',
             'deviceid': self.did, 't': self.t, 's': self.sign, }
         data = {'deviceId': self.did, 'tt': 'U', 'code': '', 'chCode': ''}
-        data1 = self.post(url, json=data, headers=headers).json()
+        data1 = self.post(url, json=data, headers=headers,proxies=self.proxies).json()
         token = data1['data']['token']
         return token
 
