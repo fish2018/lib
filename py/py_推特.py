@@ -151,7 +151,7 @@ class Spider(Spider):
     def detailContent(self, ids):
         vid = ids[0].replace('click', '').split('?')
         path = f'/api/video/can/watch?videoId={vid[0]}'
-        data = self.fetch(f'{self.host}{path}', headers=self.headers()).json()['encData']
+        data = self.fetch(f'{self.host}{path}', proxies=self.proxies,headers=self.headers()).json()['encData']
         data1 = self.aes(data)['playPath']
         clj = '[a=cr:' + json.dumps({'id': vid[1] + 'click', 'name': vid[2]}) + '/]' + vid[2] + '[/a]'
         if 'click' in ids[0]:
@@ -162,7 +162,7 @@ class Spider(Spider):
 
     def searchContent(self, key, quick, pg='1'):
         path = f'/api/search/keyWord?pageSize=20&page={pg}&searchWord={quote(key)}&searchType=1'
-        data = self.fetch(f'{self.host}{path}', headers=self.headers()).json()['encData']
+        data = self.fetch(f'{self.host}{path}', proxies=self.proxies,headers=self.headers()).json()['encData']
         data1 = self.aes(data)['videoList']
         result = {}
         videos = []
@@ -190,7 +190,7 @@ class Spider(Spider):
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36;SuiRui/twitter/ver=1.3.4'}
         url = param['url']
         type = url.split('.')[-1].split('_')[0]
-        data = self.fetch(url,headers=headers).content
+        data = self.fetch(url,headers=headers,proxies=self.proxies).content
         bdata = self.img(data, 100, '2020-zq3-888')
         return [200, f'image/{type}', bdata]
 
