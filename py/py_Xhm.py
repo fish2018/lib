@@ -8,7 +8,8 @@ from pyquery import PyQuery as pq
 from requests import Session
 sys.path.append('..')
 from base.spider import Spider
-
+import os
+import subprocess
 
 class Spider(Spider):
 
@@ -18,11 +19,42 @@ class Spider(Spider):
         self.session = Session()
         self.session.headers.update(self.headers)
         # 设置代理
-        self.proxies = {
-            'http': 'http://127.0.0.1:10172',
-            'https': 'http://127.0.0.1:10172'
-        }
-        self.session.proxies.update(self.proxies)
+        # self.proxies = {
+        #     'http': 'http://127.0.0.1:10172',
+        #     'https': 'http://127.0.0.1:10172'
+        # }
+        # self.session.proxies.update(self.proxies)
+        self.proxies = {}
+        if self.is_port_open(1072):
+            self.proxies = {
+                'http': 'http://127.0.0.1:1072',
+                'https': 'http://127.0.0.1:1072'
+            }
+        elif self.is_port_open(10172):
+            self.proxies = {
+                'http': 'http://127.0.0.1:10172',
+                'https': 'http://127.0.0.1:10172'
+            }
+        if self.proxies:  # 如果检测到可用端口，则应用代理
+            self.session.proxies.update(self.proxies)
+        pass
+
+    def is_port_open(self, port):
+        """检查指定端口是否在本机打开"""
+        if os.name == 'nt':  # Windows 系统
+            cmd = f'netstat -an | findstr :{port}'
+            try:
+                output = subprocess.check_output(cmd, shell=True, text=True)
+                return f'127.0.0.1:{port}' in output or f'0.0.0.0:{port}' in output
+            except subprocess.CalledProcessError:
+                return False
+        else:  # Linux/Unix 系统
+            cmd = f'netstat -tuln | grep :{port}'
+            try:
+                output = subprocess.check_output(cmd, shell=True, text=True)
+                return f'127.0.0.1:{port}' in output or f'0.0.0.0:{port}' in output
+            except subprocess.CalledProcessError:
+                return False
         
     def getName(self):
         pass
