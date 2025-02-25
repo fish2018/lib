@@ -116,7 +116,7 @@ class Spider(Spider):
     def homeVideoContent(self):
         videos = []
         try:
-            detail = requests.get(url=xurl, headers=headerx)
+            detail = requests.get(url=xurl, headers=headerx, proxies=self.proxies)
             detail.encoding = "utf-8"
             res = detail.text
             doc = BeautifulSoup(res, "lxml")
@@ -173,7 +173,7 @@ class Spider(Spider):
             url = f'{xurl}/{cid}/{str(page)}/'
 
         try:
-            detail = requests.get(url=url, headers=headerx)
+            detail = requests.get(url=url, headers=headerx, proxies=self.proxies)
             detail.encoding = "utf-8"
             res = detail.text
             doc = BeautifulSoup(res, "lxml")
@@ -225,7 +225,7 @@ class Spider(Spider):
         playurl = ''
         if 'http' not in did:
             did = xurl + did
-        res1 = requests.get(url=did, headers=headerx)
+        res1 = requests.get(url=did, headers=headerx, proxies=self.proxies)
         res1.encoding = "utf-8"
         res = res1.text
 
@@ -240,7 +240,7 @@ class Spider(Spider):
             "vod_actor": yanuan,
             "vod_director": '',
             "vod_content": content,
-            "vod_play_from": '💗数逼毛💗',
+            "vod_play_from": '💗洋马💗',
             "vod_play_url": bofang
                      })
 
@@ -253,7 +253,7 @@ class Spider(Spider):
         if xiutan == 0:
             if len(parts) > 1:
                 before_https, after_https = parts[0], 'http' + parts[1]
-            res = requests.get(url=after_https, headers=headerx)
+            res = requests.get(url=after_https, headers=headerx, proxies=self.proxies)
             res = res.text
 
             url2 = self.extract_middle_text(res, '<video', '</video>', 0).replace('\\', '')
@@ -261,11 +261,11 @@ class Spider(Spider):
             first_source = soup.find('source')
             src_value = first_source.get('src')
 
-            response = requests.head(src_value, allow_redirects=False)
+            response = requests.head(src_value, allow_redirects=False, proxies=self.proxies)
             if response.status_code == 302:
                 redirect_url = response.headers['Location']
 
-            response = requests.head(redirect_url, allow_redirects=False)
+            response = requests.head(redirect_url, allow_redirects=False, proxies=self.proxies)
             if response.status_code == 302:
                 redirect_url = response.headers['Location']
 
@@ -287,7 +287,7 @@ class Spider(Spider):
         else:
             url = f'{xurl}/search/{key}/{str(page)}/'
 
-        detail = requests.get(url=url, headers=headerx)
+        detail = requests.get(url=url, headers=headerx, proxies=self.proxies)
         detail.encoding = "utf-8"
         res = detail.text
         doc = BeautifulSoup(res, "lxml")
