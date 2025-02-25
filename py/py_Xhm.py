@@ -3,7 +3,6 @@
 # by嗷呜
 import json
 import sys
-import socket
 from base64 import b64decode, b64encode
 from pyquery import PyQuery as pq
 from requests import Session
@@ -26,31 +25,34 @@ class Spider(Spider):
         # self.session.proxies.update(self.proxies)
         # 检测本地端口并设置代理
         self.proxies = {}
-        if self.is_port_open('127.0.0.1', 1072):
+        test_url = 'http://www.google.com'  # 用于测试代理的URL
+        if self.is_proxy_available('127.0.0.1', 1072, test_url):
             self.proxies = {
                 'http': 'http://127.0.0.1:1072',
                 'https': 'http://127.0.0.1:1072'
             }
-        elif self.is_port_open('127.0.0.1', 10172):
+        elif self.is_proxy_available('127.0.0.1', 10172, test_url):
             self.proxies = {
                 'http': 'http://127.0.0.1:10172',
                 'https': 'http://127.0.0.1:10172'
             }
-        if self.proxies:  # 如果检测到可用端口，则应用代理
+        if self.proxies:  # 如果检测到可用代理，则应用
             self.session.proxies.update(self.proxies)
         pass
 
-    def is_port_open(self, host, port):
-        """检测指定主机和端口是否开放"""
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)  # 设置超时时间为1秒
+    def is_proxy_available(self, host, port, test_url):
+        """通过尝试请求检测代理是否可用"""
+        test_proxies = {
+            'http': f'http://{host}:{port}',
+            'https': f'http://{host}:{port}'
+        }
+        test_session = Session()
+        test_session.headers.update(self.headers)
         try:
-            result = sock.connect_ex((host, port))
-            return result == 0  # 返回0表示端口开放
-        except Exception:
+            response = test_session.get(test_url, proxies=test_proxies, timeout=2)
+            return response.status_code == 200
+        except RequestException:
             return False
-        finally:
-            sock.close()
 
     def getName(self):
         pass
