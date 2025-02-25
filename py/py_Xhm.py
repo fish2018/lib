@@ -18,43 +18,12 @@ class Spider(Spider):
         self.session = Session()
         self.session.headers.update(self.headers)
         # 设置代理
-        # self.proxies = {
-        #     'http': 'http://127.0.0.1:10172',
-        #     'https': 'http://127.0.0.1:10172'
-        # }
-        # self.session.proxies.update(self.proxies)
-        # 检测本地端口并设置代理
-        self.proxies = {}
-        test_url = 'http://www.gstatic.com/generate_204'  # 用于测试代理的URL，返回204状态码
-        if self.is_proxy_available('127.0.0.1', 1072, test_url):
-            self.proxies = {
-                'http': 'http://127.0.0.1:1072',
-                'https': 'http://127.0.0.1:1072'
-            }
-        elif self.is_proxy_available('127.0.0.1', 10172, test_url):
-            self.proxies = {
-                'http': 'http://127.0.0.1:10172',
-                'https': 'http://127.0.0.1:10172'
-            }
-        if self.proxies:  # 如果检测到可用代理，则应用
-            self.session.proxies.update(self.proxies)
-        pass
-
-    def is_proxy_available(self, host, port, test_url):
-        """通过尝试请求检测代理是否可用，类似Clash的检测方式"""
-        test_proxies = {
-            'http': f'http://{host}:{port}',
-            'https': f'http://{host}:{port}'
+        self.proxies = {
+            'http': 'http://127.0.0.1:10172',
+            'https': 'http://127.0.0.1:10172'
         }
-        test_session = Session()
-        test_session.headers.update(self.headers)
-        try:
-            response = test_session.get(test_url, proxies=test_proxies, timeout=2)
-            return response.status_code == 204  # 204 No Content 表示代理可用
-        except RequestException:
-            return False
+        self.session.proxies.update(self.proxies)
         
-
     def getName(self):
         pass
 
