@@ -228,7 +228,7 @@ class Spider(Spider):
             return response.headers['Location'][:-1]
         except Exception as e:
             print(f"获取主页失败: {str(e)}")
-            return "https://www.pornhub.com"
+            return "http://127.0.0.1:10079/p/0/127.0.0.1:10172/https://www.pornhub.com"
 
     def e64(self, text):
         try:
