@@ -18,6 +18,12 @@ class Spider(Spider):
         self.headers['referer']=f'{self.host}/'
         self.session = Session()
         self.session.headers.update(self.headers)
+        # 设置代理
+        self.proxies = {
+            'http': 'http://127.0.0.1:10172',
+            'https': 'http://127.0.0.1:10172'
+        }
+        self.session.proxies.update(self.proxies)
         pass
 
     def getName(self):
@@ -224,7 +230,7 @@ class Spider(Spider):
 
     def gethost(self):
         try:
-            response = self.fetch('https://cn.pornhub.com',headers=self.headers,allow_redirects=False)
+            response = self.fetch('https://cn.pornhub.com',headers=self.headers,proxies=self.proxies,allow_redirects=False)
             return response.headers['Location'][:-1]
         except Exception as e:
             print(f"获取主页失败: {str(e)}")
