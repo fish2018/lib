@@ -22,11 +22,11 @@ class Spider(Spider):
             'http': 'http://127.0.0.1:10172',
             'https': 'http://127.0.0.1:10172'
         }
-        if self.is_port_open('127.0.0.1', 7891):
-            self.proxies = {
-                'http': 'http://127.0.0.1:7891',
-                'https': 'http://127.0.0.1:7891'
-            }
+        # if self.is_port_open('127.0.0.1', 7891):
+        #     self.proxies = {
+        #         'http': 'http://127.0.0.1:7891',
+        #         'https': 'http://127.0.0.1:7891'
+        #     }
         
         self.session.proxies.update(self.proxies)
         pass
