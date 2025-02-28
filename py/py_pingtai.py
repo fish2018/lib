@@ -22,7 +22,19 @@ class Spider(Spider):
 		result = {'list': vods}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
-		result = {}
+		data = self.fetch(f'{self.base_url}/{tid}').json()
+		videos = [{"vod_id": item['address'], "vod_name": item['title'],
+				 "vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/",
+												   "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),
+				 "vod_remarks": item['Number'],
+				 "style": {"type": "rect", "ratio": 1.33}} for item in data]
+		result = {
+			"page": pg,
+			"pagecount": 9999,
+			"limit": 99,
+			"total": 9999,
+			"list": videos
+		}
 		return result
 	def detailContent(self,array):
 		result = {}
