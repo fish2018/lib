@@ -7,7 +7,7 @@ import json
 
 class Spider(Spider):
 	def init(self,extend=""):
-		self.base_url='http://api.hclyz.com:81/mf/'
+		self.base_url='http://api.hclyz.com:81/mf'
 		self.data = self.fetch(f'{self.base_url}/json.txt').json()
 	def getName(self):
 		return "色播平台"
@@ -37,10 +37,22 @@ class Spider(Spider):
 		}
 		return result
 	def detailContent(self,array):
-		result = {}
+		id = array[0]
+		data = self.fetch(f'{self.base_url}/{id}').json()
+		zhubo = data['zhubo']
+		playUrls = '#'.join([f"{vod['title']}${vod['address']}" for vod in zhubo])
+		vod = [{
+			"vod_play_from": 'Leospring',
+			"vod_play_url": playUrls,
+			"vod_content": 'github.com/fish2018',
+		}]
+		result = {"list": vod}
 		return result
 	def playerContent(self,flag,id,vipFlags):
-		result = {}
+		result = {
+			'parse': 0,
+			'url': id
+		}
 		return result
 	def isVideoFormat(self,url):
 		pass
