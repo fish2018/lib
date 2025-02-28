@@ -4,23 +4,26 @@ import sys
 sys.path.append('..')
 from base.spider import Spider
 import json
+import requests
 
 class Spider(Spider):
 	def init(self,extend=""):
-		self.base_url='http://api.hclyz.com:81/mf'
-		self.data = self.fetch(f'{self.base_url}/json.txt').json()
+		pass
+		# self.base_url='http://api.hclyz.com:81/mf'
+		# self.data = self.fetch(f'{self.base_url}/json.txt').json()
 
 	def homeContent(self,filter):
 		self.base_url = 'http://api.hclyz.com:81/mf'
-		self.data = self.fetch(f'{self.base_url}/json.txt').json()
+		res = requests.get(f'{self.base_url}/json.txt')
+		data = json.loads(res.text)
 		pingtai = self.data["pingtai"]
 		classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
 		classes = [{"type_name": "pingtai","type_id":"/json.txt"}]
 		result = {"class": classes}
 		return result
 	def homeVideoContent(self):
-		# data = self.fetch(f'{self.base_url}/jsonLOVE.txt').json()
-		data = self.fetch(f'{self.base_url}/json.txt').json()
+		res = requests.get(f'{self.base_url}/json.txt')
+		data = json.loads(res.text)
 		vods = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number']} for item in data]
 		result = {'list': vods}
 		return result
