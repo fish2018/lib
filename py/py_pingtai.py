@@ -16,7 +16,7 @@ class Spider(Spider):
 		self.base_url = 'http://api.hclyz.com:81/mf'
 		res = requests.get(f'{self.base_url}/json.txt')
 		data = json.loads(res.text)
-		pingtai = self.data["pingtai"]
+		pingtai = data["pingtai"]
 		classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
 		classes = [{"type_name": "pingtai","type_id":"/json.txt"}]
 		result = {"class": classes}
@@ -26,6 +26,14 @@ class Spider(Spider):
 		data = json.loads(res.text)
 		vods = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number']} for item in data]
 		result = {'list': vods}
+		result = {
+			"list": {
+				"vod_id": "/jsonLOVE.txt",
+				"vod_name": "Love",
+				"vod_pic": "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/LOVE.jpg",
+				"vod_remarks": 110
+			}
+		}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
 		data = self.fetch(f'{self.base_url}/{tid}').json()
