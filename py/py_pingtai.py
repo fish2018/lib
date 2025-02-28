@@ -11,6 +11,8 @@ class Spider(Spider):
 		self.data = self.fetch(f'{self.base_url}/json.txt').json()
 
 	def homeContent(self,filter):
+		self.base_url = 'http://api.hclyz.com:81/mf'
+		self.data = self.fetch(f'{self.base_url}/json.txt').json()
 		pingtai = self.data["pingtai"]
 		classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
 		result = {"class": classes}
