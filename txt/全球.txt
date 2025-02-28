@@ -43,6 +43,42 @@ HOT欧美版,http://live.redtraffic.xyz:80/hardcore.m3u8
 松视1备,http://suo.im/c4FP2
 松视3备,http://suo.im/9wiS2
 
+测试,#genre#
+1松视3,mitv://135.148.104.228:19806/4f855e073cb74c4ba33494f3c5feab03
+2松视3,p3p://108.181.32.169:34160/650b8a0e000007df8f1b27da75d42f65
+3松视3,p3p://108.181.20.159:45963/6109e9590001f40bfd9b661109395f3b
+4松视3,zlive://173.208.209.114:7719/28843227d999f53949936ebaff556993
+5松视3,p2p://54.39.16.152:9906/6260dfda000d0d16172188c6d4d403c3
+6松视3,mitv://45.92.126.18:9906/6260dfda000d0d16172188c6d4d403c3
+7松视3,p2p://54.39.16.152:9906/6260dfda000d0d16172188c6d4d403c3
+8松视3,http://54.39.16.152:9906/6260dfda000d0d16172188c6d4d403c3
+9松视3-ok,mitv://generationnexxxt.com:19806/0045293e14224851a3e930cf0b8a07f8
+10松视3-2,mitv://135.148.104.228:19806/0045293e14224851a3e930cf0b8a07f8
+11松视3,p5p://45.92.126.18:9906/60e5c670000a55dc0cfc8e43fe53445e
+12松视3,rtmp://45.92.126.226/channel/60e5a926c47203d3a673d5f7?sign=X36LZn%2FOPDCLklIrzW%2BkDBrpD1o9bAVXLBpa6S4x7n0%3D
+13松视3,p5p://fccs.123178.top:9906/60e5c670000a55dc0cfc8e43fe53445e
+14松视3台备,https://flv3948069e.live.126.net/live/sytv_ca330b8dfe8461e4b3bdde39ce773e83.flv
+15松视3,http://18.svi-studio.com/live/908957700097/132663288386/20205.m3u8
+16松视3(Sonsee 3),http://a1.hdflix.live:8880/LZLM5786/Akk60pCne2/33160
+17松视3,http://185.216.119.139:2015/ftvs.php?channelid=5795c5a5326d2e110eca080e&channeltype=1
+18松视3,p3p://108.181.20.159:13812/6109e9590001f40bfd9b661109395f3b.ts
+19松视3,http://18.svi-studio.com:80/live/176619383282/537544338952/20205.m3u8
+20松视3,http://64.31.55.222:80/play/9eR3CTrRwII9TyFb5jh6cz0U_Kqy21YHnIb0tc7Q5ak/m3u8
+21松视3,p9p://45.86.67.154:9906/608be9db0003468b034356b14ecbccf5.ts
+22松视3,p3p://108.181.20.159:58942/65db7c0f000d072a728d380931a81160
+23松视3,http://193.233.206.48:8090/live/rx3/404/617643fef33ced7281eb86ccb7aa95b9/index.m3u8
+24松视3,vjms://50.7.253.59:8500/live/cid=268
+25松视3,https://flv3948069e.live.126.net/live/sytv_ca330b8dfe8461e4b3bdde39ce773e83.flv
+26松视3,http://ali.hlspull.yximgs.com/live/0f8b88b82f3f0cd59b59d75a97348a03.flv
+27松视3,mitv://ns2.hellotvvod.com:9906/a5576853fb2741e4b4725be5d648329b
+28松视3,http://a1.hdflix.live:8880/LZLM5786/Akk60pCne2/33160
+29松视3台(爬),mitv://generationnexxxt.com:19806/73a8812084f443c1b3378918ec569471
+30松视3,http://A/ku9/js/159169.js?ip=167.114.175.6&id=6109e9590001f40bfd9b661109395f3b
+31松视3,http://ali.hlspull.yximgs.com/live/512f28e4c685a0a06cefc56bd91b6214.flv
+32松视3,https://2.ddyunbo.com/20190904/ZnGN7sEl/index.m3u8
+33松视3,http://A/ku9/js/159169.js?ip=108.181.20.159&id=6109e9590001f40bfd9b661109395f3b
+34松视3,p3p://167.114.175.6:55331/6109e9590001f40bfd9b661109395f3b
+35松视3,P8p://45.86.67.154:9906/608be9db0003468b034356b14ecbccf5.ts
 🔞日韩影片,#genre#
 Kpop Girl Does Porn,http://60106.vod.redtraffic.xyz/ph568fdb5194a8b/play.m3u8 
 コスプレアイドルに,https://cf005.paopao.video:443/9C3C292CD89D64F2E8A14717A50881B08E7105B9
