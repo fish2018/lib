@@ -1,3 +1,18 @@
+香港,#genre#
+TVB PLUS,http://cdn.163189.xyz/live/tvbp/stream.m3u8
+凤凰中文,http://cdn.163189.xyz/live/fhzw/stream.m3u8
+HOY TV,http://cdn.163189.xyz/live/hoy/stream.m3u8
+澳视澳门,http://cdn.163189.xyz/live/asam/stream.m3u8
+澳视卫星,http://cdn.163189.xyz/live/as/stream.m3u8
+广东珠江,http://cdn2.163189.xyz/live/gdzj/stream.m3u8
+广东体育,http://cdn2.163189.xyz/live/gdty/stream.m3u8
+重温经典,http://cdn3.163189.xyz/live/cwjd/stream.m3u8
+凤凰资讯,http://cdn3.163189.xyz/live/fhzx/stream.m3u8
+TVB J1,http://cdn3.163189.xyz/live/j1/stream.m3u8
+翡翠台,https://cdn3.163189.xyz/live/fct/stream.m3u8
+翡翠台,https://cdn.163189.xyz/live/fct4k/stream.m3u8
+明珠台,https://cdn5.163189.xyz/live/mzt/stream.m3u8
+
 🔞松视,#genre#
 香蕉,http://s.mrw.so/94E7W
 惊艳,http://suo.im/8odLv
