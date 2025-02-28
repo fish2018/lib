@@ -14,9 +14,6 @@ TVB J1,http://cdn3.163189.xyz/live/j1/stream.m3u8
 明珠台,https://cdn5.163189.xyz/live/mzt/stream.m3u8
 
 🔞松视,#genre#
-松视1,http://live.redtraffic.xyz:80/fetish.m3u8
-松视2,http://live.redtraffic.xyz:80/bigdick.m3u8
-松视3,https://2.ddyunbo.com/20190904/ZnGN7sEl/index.m3u8
 香蕉,http://s.mrw.so/94E7W
 惊艳,http://suo.im/8odLv
 潘多拉,http://suo.im/6TuSG
@@ -41,8 +38,9 @@ HOT欧美版,http://live.redtraffic.xyz:80/hardcore.m3u8
 玩美台欧美版,http://live.redtraffic.xyz:80/pov.m3u8
 二本道欧美版,http://live.redtraffic.xyz:80/blowjob.m3u8
 
-松视1备,http://suo.im/c4FP2
-松视3备,http://suo.im/9wiS2
+松视1,http://suo.im/c4FP2
+松视3,http://suo.im/9wiS2
+松视3备,https://2.ddyunbo.com/20190904/ZnGN7sEl/index.m3u8
 
 🔞日韩影片,#genre#
 Kpop Girl Does Porn,http://60106.vod.redtraffic.xyz/ph568fdb5194a8b/play.m3u8 
