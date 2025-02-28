@@ -5,6 +5,7 @@ import { Crypto, load, _ } from '../../cat.js';
  */
 
 let siteUrl = 'http://api.hclyz.com:81/mf/';
+let siteUrl = 'http://api.hclyz.com:81/mf/json.txt';
 let siteKey = '';
 let siteType = 0;
 let cateList = {};
