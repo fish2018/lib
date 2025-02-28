@@ -9,11 +9,31 @@ class Spider(Spider):
 	def init(self,extend=""):
 		self.base_url='http://api.hclyz.com:81/mf'
 		self.data = self.fetch(f'{self.base_url}/json.txt').json()
-	def getName(self):
-		return "色播平台"
+
+	headers = {
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+		'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+		'sec-ch-ua-mobile': '?0',
+		'sec-ch-ua-full-version': '"133.0.6943.98"',
+		'sec-ch-ua-arch': '"x86"',
+		'sec-ch-ua-platform': '"Windows"',
+		'sec-ch-ua-platform-version': '"19.0.0"',
+		'sec-ch-ua-model': '""',
+		'sec-ch-ua-full-version-list': '"Not(A:Brand";v="99.0.0.0", "Google Chrome";v="133.0.6943.98", "Chromium";v="133.0.6943.98"',
+		'dnt': '1',
+		'upgrade-insecure-requests': '1',
+		'sec-fetch-site': 'none',
+		'sec-fetch-mode': 'navigate',
+		'sec-fetch-user': '?1',
+		'sec-fetch-dest': 'document',
+		'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+		'priority': 'u=0, i'
+	}
+	
 	def homeContent(self,filter):
 		pingtai = self.data["pingtai"]
-		classes = [{"tpye_name": p["title"],"type_id":p["address"]} for p in pingtai]
+		classes = [{"type_name": p["title"],"type_id":p["address"]} for p in pingtai]
 		result = {"class": classes}
 		return result
 	def homeVideoContent(self):
@@ -54,6 +74,8 @@ class Spider(Spider):
 			'url': id
 		}
 		return result
+	def getName(self):
+		pass
 	def isVideoFormat(self,url):
 		pass
 	def manualVideoCheck(self):
@@ -61,3 +83,7 @@ class Spider(Spider):
 	def searchContent(self,key,quick):
 		result = {}
 		return result
+	def destroy(self):
+		pass
+	def localProxy(self, param):
+		pass
