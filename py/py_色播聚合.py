@@ -39,9 +39,9 @@ class Spider(Spider):
 		zhubo = data['zhubo']
 		playUrls = '#'.join([f"{vod['title']}${vod['address']}" for vod in zhubo])
 		vod = [{
-			"vod_play_from": 'Leospring',
+			"vod_play_from": 'sebo',
 			"vod_play_url": playUrls,
-			"vod_content": 'github.com/fish2018',
+			"vod_content": 'https://github.com/fish2018',
 		}]
 		result = {"list": vod}
 		return result
