@@ -42,10 +42,9 @@ class Spider(Spider):
 		# 										   "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),
 		# 		 "vod_remarks": item['Number'],
 		# 		 "style": {"type": "rect", "ratio": 1.33}} for item in data]
-		videos = [{"vod_id": "http://kzeeztjla.dyjiaofu.xyz/live/cx_376110.flv", "vod_name": "hello",
-				   "vod_pic": "https://nczcvboifbadjzcngdx22.sunshinegirl.top/7701/live/images/732b65d06a3ea3f0843d797314dcd10d",
-				   "vod_remarks": 110,
-				   "style": {"type": "rect", "ratio": 1.33}}]
+		res = requests.get(f'{self.base_url}/json.txt')
+		data = json.loads(res.text)
+		videos = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number'],"style": {"type": "rect", "ratio": 1.33}} for item in data]
 		result = {
 			"page": pg,
 			"pagecount": 9999,
