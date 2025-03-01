@@ -28,7 +28,7 @@ class Spider(Spider):
 		]
 		result = {
 			"page": pg,
-			"pagecount": len(videos),
+			"pagecount": 1,
 			"limit": len(videos),
 			"total": len(videos),
 			"list": videos
