@@ -30,7 +30,7 @@ class Spider(Spider):
 			"page": pg,
 			"pagecount": 9999,
 			"limit": 99,
-			"total": 9999,
+			"total": len(videos),
 			"list": videos
 		}
 		return result
