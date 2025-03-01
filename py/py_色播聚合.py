@@ -12,10 +12,10 @@ class Spider(Spider):
 		classes = [{"type_name": "色播聚合","type_id":"/json.txt"}]
 		result = {"class": classes}
 		return result
-	
+
 	def categoryContent(self,tid,pg,filter,extend):
 		home = self.fetch(f'{self.base_url}/json.txt').json()
-		data = home.get("pingtai")
+		data = home.get("pingtai")[1:]
 		videos = [
 			{
 				"vod_id":"/"+item['address'],
@@ -33,7 +33,7 @@ class Spider(Spider):
 			"list": videos
 		}
 		return result
-	
+
 	def detailContent(self,array):
 		id = array[0]
 		data = self.fetch(f'{self.base_url}/{id}').json()
@@ -46,17 +46,17 @@ class Spider(Spider):
 		}]
 		result = {"list": vod}
 		return result
-	
+
 	def playerContent(self,flag,id,vipFlags):
 		result = {
 			'parse': 0,
 			'url': id
 		}
 		return result
-	
+
 	def getName(self):
 		return '色播聚合'
-	
+
 	def homeVideoContent(self):
 		pass
 	def isVideoFormat(self,url):
