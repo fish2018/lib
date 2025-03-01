@@ -179,8 +179,8 @@ class Spider(Spider):
 		}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
-		# res = requests.get(f'{self.base_url}/json.txt')
-		res = self.fetch(f'{self.base_url}/json.txt')
+		res = requests.get(f'{self.base_url}/json.txt')
+		# res = self.fetch(f'{self.base_url}/json.txt')
 		data = json.loads(res.text)
 		# data = res.json()
 		data = home.get("pingtai")
