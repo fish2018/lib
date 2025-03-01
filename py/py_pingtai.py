@@ -151,8 +151,7 @@ home = {
 
 class Spider(Spider):
 	def init(self,extend=""):
-		pass
-		# self.base_url='http://api.hclyz.com:81/mf'
+		self.base_url='http://api.hclyz.com:81/mf'
 		# self.data = self.fetch(f'{self.base_url}/json.txt').json()
 
 	def homeContent(self,filter):
@@ -179,7 +178,7 @@ class Spider(Spider):
 		}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
-		res = requests.get(f'http://api.hclyz.com:81/mf/json.txt')
+		res = requests.get(f'{self.base_url}/json.txt')
 		# res = self.fetch(f'{self.base_url}/json.txt')
 		data = json.loads(res.text)
 		# data = res.json()
