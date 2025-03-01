@@ -152,22 +152,12 @@ home = {
 class Spider(Spider):
 	def init(self,extend=""):
 		self.base_url='http://api.hclyz.com:81/mf'
-		# self.data = self.fetch(f'{self.base_url}/json.txt').json()
 
 	def homeContent(self,filter):
-		# self.base_url = 'http://api.hclyz.com:81/mf'
-		# res = requests.get(f'{self.base_url}/json.txt')
-		# data = json.loads(res.text)
-		# pingtai = data["pingtai"]
-		# classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
-		classes = [{"type_name": "pingtai","type_id":"/json.txt"}]
+		classes = [{"type_name": "色播聚合","type_id":"/json.txt"}]
 		result = {"class": classes}
 		return result
 	def homeVideoContent(self):
-		# res = requests.get(f'{self.base_url}/json.txt')
-		# data = json.loads(res.text)
-		# vods = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number']} for item in data]
-		# result = {'list': vods}
 		result = {
 			"list": {
 				"vod_id": "/jsonLOVE.txt",
@@ -179,9 +169,7 @@ class Spider(Spider):
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
 		res = requests.get(f'{self.base_url}/json.txt')
-		# res = self.fetch(f'{self.base_url}/json.txt')
 		data = json.loads(res.text)
-		# data = res.json()
 		data = home.get("pingtai")
 		videos = [
 			{
@@ -219,14 +207,13 @@ class Spider(Spider):
 		}
 		return result
 	def getName(self):
-		return 'pingtai'
+		return '色播聚合'
 	def isVideoFormat(self,url):
 		pass
 	def manualVideoCheck(self):
 		pass
 	def searchContent(self,key,quick):
-		result = {}
-		return result
+		pass
 	def destroy(self):
 		pass
 	def localProxy(self, param):
