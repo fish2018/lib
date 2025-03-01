@@ -179,16 +179,10 @@ class Spider(Spider):
 		}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
-		# data = self.fetch(f'{self.base_url}/{tid}').json()
-		# videos = [{"vod_id": item['address'], "vod_name": item['title'],
-		# 		 "vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/",
-		# 										   "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),
-		# 		 "vod_remarks": item['Number'],
-		# 		 "style": {"type": "rect", "ratio": 1.33}} for item in data]
 		# res = requests.get(f'{self.base_url}/json.txt')
-		# res = self.fetch(f'{self.base_url}/json.txt')
-		# data = json.loads(res.text)
-		# data = res.json().get("pingtai")
+		res = self.fetch(f'{self.base_url}/json.txt')
+		data = json.loads(res.text)
+		# data = res.json()
 		data = home.get("pingtai")
 		videos = [
 			{
