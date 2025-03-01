@@ -158,18 +158,18 @@ class Spider(Spider):
 		result = {"class": classes}
 		return result
 	def homeVideoContent(self):
-		result = {
-			"list": {
-				"vod_id": "/jsonLOVE.txt",
-				"vod_name": "Love",
-				"vod_pic": "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/LOVE.jpg",
-				"vod_remarks": 110
-			}
-		}
-		return result
+		# result = {
+		# 	"list": {
+		# 		"vod_id": "/jsonLOVE.txt",
+		# 		"vod_name": "Love",
+		# 		"vod_pic": "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/LOVE.jpg",
+		# 		"vod_remarks": 110
+		# 	}
+		# }
+		# return result
+		pass
 	def categoryContent(self,tid,pg,filter,extend):
-		res = requests.get(f'{self.base_url}/json.txt')
-		data = json.loads(res.text)
+		home = self.fetch(f'{self.base_url}/json.txt').json()
 		data = home.get("pingtai")
 		videos = [
 			{
