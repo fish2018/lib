@@ -13,19 +13,19 @@ class Spider(Spider):
 		# self.data = self.fetch(f'{self.base_url}/json.txt').json()
 
 	def homeContent(self,filter):
-		self.base_url = 'http://api.hclyz.com:81/mf'
-		res = requests.get(f'{self.base_url}/json.txt')
-		data = json.loads(res.text)
-		pingtai = data["pingtai"]
-		classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
+		# self.base_url = 'http://api.hclyz.com:81/mf'
+		# res = requests.get(f'{self.base_url}/json.txt')
+		# data = json.loads(res.text)
+		# pingtai = data["pingtai"]
+		# classes = [{"type_name": p["title"],"type_id":"/"+p["address"]} for p in pingtai]
 		classes = [{"type_name": "pingtai","type_id":"/json.txt"}]
 		result = {"class": classes}
 		return result
 	def homeVideoContent(self):
-		res = requests.get(f'{self.base_url}/json.txt')
-		data = json.loads(res.text)
-		vods = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number']} for item in data]
-		result = {'list': vods}
+		# res = requests.get(f'{self.base_url}/json.txt')
+		# data = json.loads(res.text)
+		# vods = [{"vod_id":"/"+item['address'],"vod_name": item['title'],"vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/", "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),"vod_remarks": item['Number']} for item in data]
+		# result = {'list': vods}
 		result = {
 			"list": {
 				"vod_id": "/jsonLOVE.txt",
@@ -36,12 +36,16 @@ class Spider(Spider):
 		}
 		return result
 	def categoryContent(self,tid,pg,filter,extend):
-		data = self.fetch(f'{self.base_url}/{tid}').json()
-		videos = [{"vod_id": item['address'], "vod_name": item['title'],
-				 "vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/",
-												   "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),
-				 "vod_remarks": item['Number'],
-				 "style": {"type": "rect", "ratio": 1.33}} for item in data]
+		# data = self.fetch(f'{self.base_url}/{tid}').json()
+		# videos = [{"vod_id": item['address'], "vod_name": item['title'],
+		# 		 "vod_pic": item['xinimg'].replace("http://cdn.gcufbd.top/img/",
+		# 										   "https://slink.ltd/https://raw.githubusercontent.com/fish2018/lib/refs/heads/main/imgs/"),
+		# 		 "vod_remarks": item['Number'],
+		# 		 "style": {"type": "rect", "ratio": 1.33}} for item in data]
+		videos = [{"vod_id": "http://kzeeztjla.dyjiaofu.xyz/live/cx_376110.flv", "vod_name": "hello",
+				   "vod_pic": "https://nczcvboifbadjzcngdx22.sunshinegirl.top/7701/live/images/732b65d06a3ea3f0843d797314dcd10d",
+				   "vod_remarks": 110,
+				   "style": {"type": "rect", "ratio": 1.33}}]
 		result = {
 			"page": pg,
 			"pagecount": 9999,
