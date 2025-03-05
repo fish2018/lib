@@ -1,7 +1,7 @@
 Export from pan https://apps.apple.com/cn/app/id1468401388
 [Group]
 groupName=😃天美传媒
-😃8传媒01,https://d862cp.cdnedge.live/file/avple-images/hls/62e6bc3d25698b745fc62e3e/playlist.m3u8
+😃8传媒01,https://1xp60.cdnedge.live/file/avple-images/hls/62e4d4c464d6ad45f65f31b6/playlist.m3u8
 😃8传媒02,https://e2fa6.cdnedge.live/file/avple-images/hls/62e68f4a0727f630f978989f/playlist.m3u8
 😃8传媒03,https://e2fa6.cdnedge.live/file/avple-images/hls/62e68e970727f630f978989d/playlist.m3u8
 😃8传媒04,https://e2fa6.cdnedge.live/file/avple-images/hls/62e68f0f0727f630f978989e/playlist.m3u8
@@ -96,4 +96,3 @@ groupName=😃天美传媒
 😃7传媒07,https://zo392.cdnedge.live/file/avple-images/hls/62e4ee8d64d6ad45f65f31b9/playlist.m3u8
 😃7传媒08,https://zo392.cdnedge.live/file/avple-images/hls/62e4e2cd64d6ad45f65f31b8/playlist.m3u8
 😃7传媒09,https://8bb88.cdnedge.live/file/avple-images/hls/62e4dbc464d6ad45f65f31b7/playlist.m3u8
-😃7传媒10,https://1xp60.cdnedge.live/file/avple-images/hls/62e4d4c464d6ad45f65f31b6/playlist.m3u8
