@@ -13,70 +13,8 @@ TVB J1,http://cdn3.163189.xyz/live/j1/stream.m3u8
 翡翠台,https://cdn.163189.xyz/live/fct4k/stream.m3u8
 明珠台,https://cdn5.163189.xyz/live/mzt/stream.m3u8
 
-凤凰中文,http://A/ku9/js/ku9.js?id=ku9-1
-凤凰资讯,http://A/ku9/js/ku9.js?id=ku9-2
-凤凰香港,http://A/ku9/js/ku9.js?id=ku9-3
-翡翠台,http://A/ku9/js/ku9.js?id=ku9-4
-明珠台,http://A/ku9/js/ku9.js?id=ku9-5
-TVB Plus,http://A/ku9/js/ku9.js?id=ku9-6
-无线新闻,http://A/ku9/js/ku9.js?id=ku9-7
-港版美亚,http://A/ku9/js/ku9.js?id=ku9-8
-HOY78,http://A/ku9/js/ku9.js?id=ku9-9
-ViuTV,http://A/ku9/js/ku9.js?id=ku9-10
-ViuTV6,http://A/ku9/js/ku9.js?id=ku9-11
-TVB娱乐新闻,http://A/ku9/js/ku9.js?id=ku9-12
-TVB星河频道,http://A/ku9/js/ku9.js?id=ku9-13
-无线新闻(北美),http://A/ku9/js/ku9.js?id=ku9-14
-myTV SUPER 18台,http://A/ku9/js/ku9.js?id=ku9-15
-myTV经典台,http://A/ku9/js/ku9.js?id=ku9-16
-myTV黃金翡翠台,http://A/ku9/js/ku9.js?id=ku9-17
-Now星影台,http://A/ku9/js/ku9.js?id=ku9-18
-Now爆谷台,http://A/ku9/js/ku9.js?id=ku9-19
-明珠剧集台(北美),http://A/ku9/js/ku9.js?id=ku9-20
-翡翠剧集台(北美),http://A/ku9/js/ku9.js?id=ku9-21
-翡翠综合台(北美),http://A/ku9/js/ku9.js?id=ku9-22
-28 AI 智慧賽馬,http://A/ku9/js/ku9.js?id=ku9-23
-Channel 5 HD,http://A/ku9/js/ku9.js?id=ku9-24
-Channel 8 HD,http://A/ku9/js/ku9.js?id=ku9-25
-Channel U HD,http://A/ku9/js/ku9.js?id=ku9-26
-PopC,http://A/ku9/js/ku9.js?id=ku9-27
-ROCK Action,http://A/ku9/js/ku9.js?id=ku9-28
-TVBS HD,http://A/ku9/js/ku9.js?id=ku9-29
-TVBS新闻台,http://A/ku9/js/ku9.js?id=ku9-30
-tvN,http://A/ku9/js/ku9.js?id=ku9-31
-中天亚洲,http://A/ku9/js/ku9.js?id=ku9-32
-中天新闻,http://A/ku9/js/ku9.js?id=ku9-33
-中视,http://A/ku9/js/ku9.js?id=ku9-34
-华视,http://A/ku9/js/ku9.js?id=ku9-35
-寰宇新闻,http://A/ku9/js/ku9.js?id=ku9-36
-靖天电影,http://A/ku9/js/ku9.js?id=ku9-37
-龙华日韩,http://A/ku9/js/ku9.js?id=ku9-38
-龙华经典,http://A/ku9/js/ku9.js?id=ku9-39
-龙华电影,http://A/ku9/js/ku9.js?id=ku9-40
-日本全天新闻,http://A/ku9/js/ku9.js?id=ku9-41
-Animax-HK,http://A/ku9/js/ku9.js?id=ku9-42
-C+台,http://A/ku9/js/ku9.js?id=ku9-43
-DW,http://A/ku9/js/ku9.js?id=ku9-44
-France 24,http://A/ku9/js/ku9.js?id=ku9-45
-KIX,http://A/ku9/js/ku9.js?id=ku9-46
-ROCK Action,http://A/ku9/js/ku9.js?id=ku9-47
-Love Nature HD,http://A/ku9/js/ku9.js?id=ku9-48
-NHK World-Japan,http://A/ku9/js/ku9.js?id=ku9-49
-Nick Jr,http://A/ku9/js/ku9.js?id=ku9-50
-Nickelodeon,http://A/ku9/js/ku9.js?id=ku9-51
-Thrill,http://A/ku9/js/ku9.js?id=ku9-52
-ZooMoo,http://A/ku9/js/ku9.js?id=ku9-53
-亞洲新聞台,http://A/ku9/js/ku9.js?id=ku9-54
-東方衛視國際頻道,http://A/ku9/js/ku9.js?id=ku9-55
-無線衛星新聞台,http://A/ku9/js/ku9.js?id=ku9-56
-神州新聞台,http://A/ku9/js/ku9.js?id=ku9-57
 
 🔞松视,#genre#
-pigoo,http://s.mrw.so/7DlBI
-松视2,http://b.mtw.so/6pAjsB
-松视3,https://2.ddyunbo.com/20190904/ZnGN7sEl/index.m3u8
-LEOTV,http://go7l99a.com:80/live/9zlggo49/0rc4w4yr/649844.m3u8
-LEOTV,http://go7l99a.com:80/live/9zlggo49/0rc4w4yr/649844.m3u8
 樱花台欧美版,http://live.redtraffic.xyz:80/russian.m3u8
 一本道欧美版,http://live.redtraffic.xyz:80/bigass.m3u8
 松视1欧美版,http://live.redtraffic.xyz:80/fetish.m3u8
@@ -91,6 +29,10 @@ HOT欧美版,http://live.redtraffic.xyz:80/hardcore.m3u8
 粉红台欧美版,http://live.redtraffic.xyz:80/teen.m3u8
 玩美台欧美版,http://live.redtraffic.xyz:80/pov.m3u8
 二本道欧美版,http://live.redtraffic.xyz:80/blowjob.m3u8
+pigoo,http://s.mrw.so/7DlBI
+松视2,http://b.mtw.so/6pAjsB
+松视3,https://2.ddyunbo.com/20190904/ZnGN7sEl/index.m3u8
+LEOTV,http://go7l99a.com:80/live/9zlggo49/0rc4w4yr/649844.m3u8
 
 🔞日韩影片,#genre#
 Kpop Girl Does Porn,http://60106.vod.redtraffic.xyz/ph568fdb5194a8b/play.m3u8 
