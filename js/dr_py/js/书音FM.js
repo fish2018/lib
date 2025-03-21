@@ -1,0 +1,35 @@
+var rule = {
+    title:'书音FM',
+    host:'https://m.shuyinfm.com',
+    url:'/listinfo-fyclass-(fypage-1).html',
+    searchUrl:'/e/search/?searchget=1&keyboard=**&show=player',
+    searchable:2,
+    quickSearch:0,
+    headers:{
+        'User-Agent':'MOBILE_UA'
+    },
+    timeout:5000,
+    // homeUrl:'/fenlei/',
+    // class_parse: '.pd-class:eq(0) dd;a&&Text;a&&href;.*/(.*?).html',
+    class_name:'广播剧-耽美&广播剧-爱情&广播剧-古风&广播剧-现代&有声小说-言情&有声小说-玄幻&有声小说-恐怖&有声小说-穿越&有声小说-都市&有声小说-历史&有声小说-悬疑&有声小说-穿越&有声小说-文学&有声小说-推理&有声小说-军事&有声小说-职场&有声小说-反腐&有声小说-人物&有声小说-修真&有声小说-网游&有声小说-武侠&评书-单田芳&评书-刘兰芳&评书-田连元&评书-袁阔成&评书-连丽如&评书-张少佐&评书-田战义&评书-孙一&评书-其他&评书-袁田&评书-王玥波&评书-郭德纲&评书-关永超&评书-王传林',class_url:'10&12&51&54&1&2&5&7&8&16&33&36&38&39&40&41&56&58&60&63&92&42&43&44&45&46&47&48&49&50&53&55&57&62&65',
+    play_parse:true,
+    lazy:'',
+    limit:6,
+    // double:true,
+    //推荐:'.module;.list-name&&Text;*;.module-slide-author&&Text;*',
+    一级:'.book-ol&&li;h4&&Text;img&&data-original;.book-meta&&Text;a&&href',
+    二级:{
+    	// title:'h2&&Text;.book-cell .book-rand-a:eq(2)&&Text',
+        title:'h1&&Text;.book-cell .book-rand-a:eq(0)&&a&&Text',
+    	img:'.book img&&src',
+    	// desc:';;;;.book-des p&&Text',
+        desc:';;;.book-rand-a:eq(2)&&Text;.book-des p&&Text',
+    	content:'.book-des--p&&Text',
+	    tabs:'.playlist-top&&h2',
+    	// lists:'js:pd=jsp.pd;let url=pd(html,".bookbutton&&a&&href");log(url);html=request(url);let v=pd(html,".booksite&&script&&Html");var document={};var VideoListJson;VideoListJson=eval(v.split("VideoListJson=")[1].split(",urlinfo")[0]);log(typeof VideoListJson);let list1=VideoListJson[0][1];LISTS=[list1];log(LISTS);',
+   		// 有声小说有防盗链,我服了(上面的列表数据正常拿到了,没法播放)
+   		//  lists:'#playlist:eq(#id)&&ul&&li',
+    	lists:'#playlist ul li',
+    },
+    搜索:'*',
+}
