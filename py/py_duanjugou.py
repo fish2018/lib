@@ -129,23 +129,44 @@ class Duanjugou(Spider):
             
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            # 获取首页推荐的视频列表，尝试多种选择器
+            # 根据网站实际结构，找到首页内容区域
+            main_list_section = soup.find('div', class_='erx-list-box')
+            if not main_list_section:
+                self.debugPrint("找不到内容区域")
+                return []
+                
+            item_list = main_list_section.find('ul', class_='erx-list')
+            if not item_list:
+                self.debugPrint("找不到内容列表")
+                return []
+            
             videos = []
             
-            # 方法1: 直接查找所有包含[短剧]的链接
-            items = soup.find_all('a')
-            
-            self.debugPrint(f"找到的链接数量: {len(items)}")
+            items = item_list.find_all('li', class_='item')
+            self.debugPrint(f"找到的列表项数量: {len(items)}")
             
             for item in items:
                 try:
-                    title = item.text.strip()
-                    if not '[短剧]' in title:
+                    # 获取标题区域
+                    a_div = item.find('div', class_='a')
+                    if not a_div:
                         continue
                     
-                    self.debugPrint(f"找到短剧链接: {title}")
+                    # 提取链接和标题
+                    link_elem = a_div.find('a', class_='main')
+                    if not link_elem:
+                        continue
                     
-                    title = title.replace('[短剧]', '').strip()
+                    title = link_elem.text.strip()
+                    link = link_elem.get('href')
+                    
+                    # 提取时间
+                    i_div = item.find('div', class_='i')
+                    time_text = ""
+                    if i_div:
+                        time_span = i_div.find('span', class_='time')
+                        if time_span:
+                            time_text = time_span.text.strip()
                     
                     # 提取集数信息
                     episode_match = re.search(r'（(\d+)集）', title)
@@ -153,81 +174,24 @@ class Duanjugou(Spider):
                     if episode_match:
                         episode_count = episode_match.group(1) + '集'
                     
-                    link = item.get('href')
-                    if not link:
-                        continue
-                    
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
                     
-                    video_id = link  # 使用链接作为视频ID
-                    
-                    # 由于没有直接的图片，使用默认图标
-                    img = "https://duanjugou.top/favicon.ico"
+                    # 使用默认图标
+                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
-                        "vod_id": video_id,
+                        "vod_id": link,
                         "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": episode_count
+                        "vod_remarks": episode_count if episode_count else time_text
                     })
                     
-                    if len(videos) >= 20:  # 限制数量
+                    if len(videos) >= 30:  # 限制数量
                         break
                 except Exception as e:
                     self.debugPrint(f"处理单个短剧时出错: {str(e)}")
                     continue
-            
-            # 如果方法1失败，尝试方法2：查找列表项
-            if not videos:
-                self.debugPrint("方法1未找到短剧，尝试方法2")
-                
-                # 尝试找到内容列表
-                content_lists = soup.find_all(['ul', 'ol', 'div'], class_=lambda x: x and ('list' in x.lower() or 'content' in x.lower()))
-                
-                for content_list in content_lists:
-                    links = content_list.find_all('a')
-                    for link in links:
-                        try:
-                            title = link.text.strip()
-                            if not title or len(title) < 2:
-                                continue
-                                
-                            # 如果不是短剧但有明显的标题特征也收录
-                            title_clean = title
-                            if '[短剧]' in title:
-                                title_clean = title.replace('[短剧]', '').strip()
-                            
-                            # 提取集数信息
-                            episode_match = re.search(r'（(\d+)集）', title_clean)
-                            episode_count = ''
-                            if episode_match:
-                                episode_count = episode_match.group(1) + '集'
-                            
-                            link_url = link.get('href')
-                            if not link_url:
-                                continue
-                                
-                            if not link_url.startswith('http'):
-                                link_url = urljoin(self.siteUrl, link_url)
-                            
-                            # 由于没有直接的图片，使用默认图标
-                            img = "https://duanjugou.top/favicon.ico"
-                            
-                            videos.append({
-                                "vod_id": link_url,
-                                "vod_name": title_clean,
-                                "vod_pic": img,
-                                "vod_remarks": episode_count
-                            })
-                            
-                            if len(videos) >= 20:  # 限制数量
-                                break
-                        except Exception as e:
-                            continue
-                    
-                    if videos:  # 如果找到了视频，就不继续查找其他列表了
-                        break
             
             self.debugPrint(f"最终找到的视频数量: {len(videos)}")
             return videos
@@ -238,19 +202,22 @@ class Duanjugou(Spider):
     def categoryContent(self, tid, pg, filter, extend):
         result = {}
         
-        url = self.siteUrl
-        if pg != '1':  # 分页处理
-            url = f"{self.siteUrl}/page/{pg}"
-        
+        # 根据分类和页码构建URL
         if tid == 'latest':
             # 最新内容
-            pass  # 默认就是最新内容
+            url = self.siteUrl
+            if pg != '1':
+                url = f"{self.siteUrl}/page_{pg}.html"
         elif tid == 'hot-day':
             # 24小时热门
-            url = f"{self.siteUrl}/?order=hot-day"
+            url = f"{self.siteUrl}/home-day-hot.html"
+            if pg != '1':
+                url = f"{self.siteUrl}/home-day-hot_{pg}.html"
         elif tid == 'hot-week':
             # 一周热门
-            url = f"{self.siteUrl}/?order=hot-week"
+            url = f"{self.siteUrl}/home-week-hot.html"
+            if pg != '1':
+                url = f"{self.siteUrl}/home-week-hot_{pg}.html"
         elif tid.startswith('tag-'):
             # 标签过滤
             tag_category = tid.split('-')[1]
@@ -260,7 +227,20 @@ class Duanjugou(Spider):
                 search_tag = extend['tag']
             
             if search_tag:
-                url = f"{self.siteUrl}/search?q={quote_plus(search_tag)}"
+                url = f"{self.siteUrl}/search.php?q={quote_plus(search_tag)}"
+                if pg != '1':
+                    # 注意：网站可能不支持搜索结果的翻页
+                    url = f"{self.siteUrl}/search.php?q={quote_plus(search_tag)}"
+            else:
+                # 默认返回最新内容
+                url = self.siteUrl
+                if pg != '1':
+                    url = f"{self.siteUrl}/page_{pg}.html"
+        else:
+            # 默认情况
+            url = self.siteUrl
+            if pg != '1':
+                url = f"{self.siteUrl}/page_{pg}.html"
         
         headers = {
             "User-Agent": self.userAgent,
@@ -282,29 +262,53 @@ class Duanjugou(Spider):
             
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            # 使用更通用的方法获取短剧列表
+            # 获取内容区域
+            main_list_section = None
+            
+            # 搜索页和普通页面结构略有不同
+            if 'search.php' in url:
+                main_list_section = soup.find('div', class_='erx-list-box')
+            else:
+                content_section = soup.find('div', class_='erx-content')
+                if content_section:
+                    main_list_section = content_section.find('div', class_='erx-list-box')
+            
+            if not main_list_section:
+                self.debugPrint("找不到内容区域")
+                return result
+                
+            item_list = main_list_section.find('ul', class_='erx-list')
+            if not item_list:
+                self.debugPrint("找不到内容列表")
+                return result
+            
             videos = []
             
-            # 方法1: 直接查找所有包含[短剧]的链接
-            items = soup.find_all('a')
-            
-            self.debugPrint(f"找到的链接数量: {len(items)}")
-            processed_links = set()  # 用于去重
+            items = item_list.find_all('li', class_='item')
+            self.debugPrint(f"找到的列表项数量: {len(items)}")
             
             for item in items:
                 try:
-                    title = item.text.strip()
-                    if not title or '[短剧]' not in title:
+                    # 获取标题区域
+                    a_div = item.find('div', class_='a')
+                    if not a_div:
                         continue
                     
-                    link = item.get('href')
-                    if not link or link in processed_links:
+                    # 提取链接和标题
+                    link_elem = a_div.find('a', class_='main')
+                    if not link_elem:
                         continue
                     
-                    processed_links.add(link)
-                    self.debugPrint(f"找到短剧链接: {title}")
+                    title = link_elem.text.strip()
+                    link = link_elem.get('href')
                     
-                    title = title.replace('[短剧]', '').strip()
+                    # 提取时间
+                    i_div = item.find('div', class_='i')
+                    time_text = ""
+                    if i_div:
+                        time_span = i_div.find('span', class_='time')
+                        if time_span:
+                            time_text = time_span.text.strip()
                     
                     # 提取集数信息
                     episode_match = re.search(r'（(\d+)集）', title)
@@ -315,78 +319,47 @@ class Duanjugou(Spider):
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
                     
-                    # 由于没有直接的图片，使用默认图标
-                    img = "https://duanjugou.top/favicon.ico"
+                    # 使用默认图标
+                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
                         "vod_id": link,
                         "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": episode_count
+                        "vod_remarks": episode_count if episode_count else time_text
                     })
                 except Exception as e:
                     self.debugPrint(f"处理单个短剧时出错: {str(e)}")
                     continue
             
-            # 如果方法1失败，尝试方法2：查找列表项
-            if not videos:
-                self.debugPrint("方法1未找到短剧，尝试方法2")
-                
-                # 尝试找到内容列表
-                content_lists = soup.find_all(['ul', 'ol', 'div'], class_=lambda x: x and ('list' in x.lower() or 'content' in x.lower()))
-                
-                for content_list in content_lists:
-                    links = content_list.find_all('a')
-                    for link in links:
-                        try:
-                            title = link.text.strip()
-                            if not title or len(title) < 2:
-                                continue
-                                
-                            link_url = link.get('href')
-                            if not link_url or link_url in processed_links:
-                                continue
-                                
-                            processed_links.add(link_url)
-                                
-                            # 如果不是短剧但有明显的标题特征也收录
-                            title_clean = title
-                            if '[短剧]' in title:
-                                title_clean = title.replace('[短剧]', '').strip()
-                            
-                            # 提取集数信息
-                            episode_match = re.search(r'（(\d+)集）', title_clean)
-                            episode_count = ''
-                            if episode_match:
-                                episode_count = episode_match.group(1) + '集'
-                            
-                            if not link_url.startswith('http'):
-                                link_url = urljoin(self.siteUrl, link_url)
-                            
-                            # 由于没有直接的图片，使用默认图标
-                            img = "https://duanjugou.top/favicon.ico"
-                            
-                            videos.append({
-                                "vod_id": link_url,
-                                "vod_name": title_clean,
-                                "vod_pic": img,
-                                "vod_remarks": episode_count
-                            })
-                        except Exception as e:
-                            continue
-                    
-                    if videos:  # 如果找到了视频，就不继续查找其他列表了
-                        break
-            
             # 判断是否有下一页
-            next_page = soup.find('a', class_='next') or soup.find('a', text=re.compile(r'下一页|Next'))
-            has_next = True if next_page else False
+            pagebar = main_list_section.find('div', class_='erx-pagebar')
+            has_next = False
+            if pagebar:
+                # 查找是否有下一页链接
+                next_link = pagebar.find('a', title='›')
+                if next_link:
+                    has_next = True
+                    
+                # 或者查找最后一页的页码
+                last_page_link = pagebar.find('a', title='››')
+                if last_page_link:
+                    href = last_page_link.get('href', '')
+                    page_match = re.search(r'page_(\d+)', href)
+                    if page_match:
+                        total_pages = int(page_match.group(1))
+                        self.debugPrint(f"总页数: {total_pages}")
+                        
+                        result['pagecount'] = total_pages
+                        result['total'] = total_pages * 30  # 估算总数
+            
+            if 'pagecount' not in result:
+                result['pagecount'] = 999 if has_next else int(pg)
+                result['total'] = 999 * 30 if has_next else len(videos)
             
             result['list'] = videos
-            result['page'] = pg
-            result['pagecount'] = 999 if has_next else int(pg)
-            result['limit'] = 90
-            result['total'] = 999999
+            result['page'] = int(pg)
+            result['limit'] = 30
             
             self.debugPrint(f"分类页找到的视频数量: {len(videos)}")
             return result
@@ -420,76 +393,46 @@ class Duanjugou(Spider):
             
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            # 尝试多种方式获取标题
-            title = ""
-            title_elem = soup.find('h1') or soup.find('h2') or soup.find('title')
-            if title_elem:
-                title = title_elem.text.strip()
-                title = title.replace('[短剧]', '').strip()
+            # 获取标题
+            title_elem = soup.find('h1')
+            if not title_elem:
+                self.debugPrint("找不到标题")
+                return {}
                 
-                # 如果title包含网站名，需要去除
-                if ' - ' in title:
-                    title = title.split(' - ')[0].strip()
+            title = title_elem.text.strip()
             
-            if not title:
-                # 尝试从URL中提取标题
-                try:
-                    url_parts = video_id.rstrip('/').split('/')
-                    title = url_parts[-1] or url_parts[-2]
-                    title = urllib.parse.unquote(title)
-                except:
-                    title = "未知短剧"
+            # 获取内容区域
+            content_section = soup.find('section', class_='con')
+            if not content_section:
+                self.debugPrint("找不到内容区域")
+                return {}
             
-            self.debugPrint(f"提取到的标题: {title}")
+            # 提取网盘链接 - 直接获取第一个外部链接
+            network_disk_link = ""
+            network_disk_text = "网盘链接"
             
-            # 获取内容描述（如果有的话）
-            desc = ""
-            content_elem = soup.find('div', class_=lambda x: x and 'content' in x.lower()) or soup.find('article')
-            if content_elem:
-                # 去掉所有的链接元素
-                for a in content_elem.find_all('a'):
-                    a.extract()
+            link_elem = content_section.find('a', rel='external nofollow')
+            if link_elem:
+                network_disk_link = link_elem.get('href', '')
+                network_disk_text = link_elem.text.strip() or "网盘链接"
                 
-                desc = content_elem.text.strip()
-                # 清理描述文本
-                desc = re.sub(r'\s+', ' ', desc)
-                # 限制长度
-                if len(desc) > 200:
-                    desc = desc[:200] + "..."
+                self.debugPrint(f"找到网盘链接: {network_disk_link}")
             
-            self.debugPrint(f"提取到的描述: {desc[:50]}...")
-            
-            # 获取网盘链接
-            pan_links = []
-            link_patterns = [
-                r'(https?://pan\.baidu\.com/s/[a-zA-Z0-9_-]+)',  # 百度网盘链接
-                r'(https?://www\.aliyundrive\.com/s/[a-zA-Z0-9_-]+)',  # 阿里云盘链接
-                r'(https?://www\.123pan\.com/s/[a-zA-Z0-9_-]+)'  # 123云盘链接
-            ]
-            
-            # 先从所有链接中查找
-            link_elems = soup.find_all('a')
-            for link in link_elems:
-                try:
-                    href = link.get('href', '')
-                    if not href:
-                        continue
-                        
-                    for pattern in link_patterns:
-                        if re.search(pattern, href):
-                            link_text = link.text.strip() or "网盘链接"
-                            pan_links.append(f"{link_text}${href}")
-                            break
-                except:
-                    continue
-            
-            # 如果没有找到链接，尝试从文本中正则匹配
-            if not pan_links:
-                text = html_content
+            # 如果没有找到链接，尝试从文本中匹配
+            if not network_disk_link:
+                link_patterns = [
+                    r'(https?://pan\.baidu\.com/s/[a-zA-Z0-9_-]+)',  # 百度网盘
+                    r'(https?://www\.aliyundrive\.com/s/[a-zA-Z0-9_-]+)',  # 阿里云盘
+                    r'(https?://www\.123pan\.com/s/[a-zA-Z0-9_-]+)',  # 123云盘
+                    r'(https?://pan\.quark\.cn/s/[a-zA-Z0-9_-]+)'  # 夸克网盘
+                ]
+                
                 for pattern in link_patterns:
-                    matches = re.findall(pattern, text)
-                    for match in matches:
-                        pan_links.append(f"网盘链接${match}")
+                    matches = re.search(pattern, html_content)
+                    if matches:
+                        network_disk_link = matches.group(1)
+                        self.debugPrint(f"从文本中匹配到网盘链接: {network_disk_link}")
+                        break
             
             # 提取提取码
             extract_code = ""
@@ -503,37 +446,37 @@ class Duanjugou(Spider):
                 code_match = re.search(pattern, html_content)
                 if code_match:
                     extract_code = code_match.group(1)
+                    self.debugPrint(f"找到提取码: {extract_code}")
                     break
             
-            if extract_code and pan_links:
-                # 添加提取码到第一个链接中
-                first_link = pan_links[0].split('$')
-                if len(first_link) == 2:
-                    name, url = first_link
-                    name = f"{name}(提取码:{extract_code})"
-                    pan_links[0] = f"{name}${url}"
+            # 构建播放链接
+            play_url = f"{network_disk_text}${network_disk_link}"
+            if extract_code and network_disk_link:
+                play_url = f"{network_disk_text} 提取码:{extract_code}${network_disk_link}"
+                
+            if not network_disk_link:
+                play_url = f"请在浏览器中打开原页面获取网盘链接${video_id}"
             
-            # 如果没有找到网盘链接，使用分享文本
-            if not pan_links:
-                share_text = "请在浏览器中打开原页面获取网盘链接"
-                pan_links.append(f"{share_text}${video_id}")
+            # 提取集数信息
+            episode_match = re.search(r'（(\d+)集）', title)
+            episode_count = ''
+            if episode_match:
+                episode_count = episode_match.group(1) + '集'
             
-            self.debugPrint(f"提取到的网盘链接数量: {len(pan_links)}")
-            
-            # 封装为标准格式
+            # 构建返回数据
             vod = {
                 "vod_id": video_id,
                 "vod_name": title,
-                "vod_pic": "https://duanjugou.top/favicon.ico",
+                "vod_pic": "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png",
                 "type_name": "短剧",
                 "vod_year": time.strftime("%Y", time.localtime()),
                 "vod_area": "中国大陆",
-                "vod_remarks": "",
+                "vod_remarks": episode_count,
                 "vod_actor": "",
                 "vod_director": "",
-                "vod_content": desc,
+                "vod_content": f"网盘链接：{network_disk_link}" + (f"，提取码：{extract_code}" if extract_code else ""),
                 "vod_play_from": "网盘",
-                "vod_play_url": "#".join(pan_links)
+                "vod_play_url": play_url
             }
             
             result = {
@@ -545,7 +488,7 @@ class Duanjugou(Spider):
             return {}
     
     def searchContent(self, key, quick):
-        search_url = f"{self.siteUrl}/search?q={quote_plus(key)}"
+        search_url = f"{self.siteUrl}/search.php?q={quote_plus(key)}"
         
         headers = {
             "User-Agent": self.userAgent,
@@ -567,33 +510,47 @@ class Duanjugou(Spider):
             
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            videos = []
-            processed_links = set()  # 用于去重
+            # 获取搜索结果列表
+            main_list_section = soup.find('div', class_='erx-list-box')
+            if not main_list_section:
+                self.debugPrint("找不到搜索结果区域")
+                return []
+                
+            item_list = main_list_section.find('ul', class_='erx-list')
+            if not item_list:
+                self.debugPrint("找不到搜索结果列表")
+                return []
             
-            # 方法1: 查找所有含有短剧关键字的链接
-            items = soup.find_all('a')
+            videos = []
+            
+            items = item_list.find_all('li', class_='item')
+            self.debugPrint(f"找到的搜索结果数量: {len(items)}")
             
             for item in items:
                 try:
-                    title = item.text.strip()
-                    if not title:
+                    # 获取标题区域
+                    a_div = item.find('div', class_='a')
+                    if not a_div:
                         continue
                     
-                    # 如果标题中包含搜索关键词或带有短剧标识，则认为是有效结果
-                    if key.lower() not in title.lower() and '[短剧]' not in title:
+                    # 提取链接和标题
+                    link_elem = a_div.find('a', class_='main')
+                    if not link_elem:
                         continue
                     
-                    link = item.get('href')
-                    if not link or link in processed_links:
-                        continue
+                    title = link_elem.text.strip()
+                    link = link_elem.get('href')
                     
-                    processed_links.add(link)
-                    
-                    # 清理标题
-                    title_clean = title.replace('[短剧]', '').strip()
+                    # 提取时间
+                    i_div = item.find('div', class_='i')
+                    time_text = ""
+                    if i_div:
+                        time_span = i_div.find('span', class_='time')
+                        if time_span:
+                            time_text = time_span.text.strip()
                     
                     # 提取集数信息
-                    episode_match = re.search(r'（(\d+)集）', title_clean)
+                    episode_match = re.search(r'（(\d+)集）', title)
                     episode_count = ''
                     if episode_match:
                         episode_count = episode_match.group(1) + '集'
@@ -601,65 +558,20 @@ class Duanjugou(Spider):
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
                     
-                    # 由于没有直接的图片，使用默认图标
-                    img = "https://duanjugou.top/favicon.ico"
+                    # 使用默认图标
+                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
                         "vod_id": link,
-                        "vod_name": title_clean,
+                        "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": episode_count
+                        "vod_remarks": episode_count if episode_count else time_text
                     })
                 except Exception as e:
                     self.debugPrint(f"处理搜索结果时出错: {str(e)}")
                     continue
             
-            # 如果找不到结果，尝试方法2
-            if not videos:
-                self.debugPrint("搜索方法1未找到结果，尝试方法2")
-                # 尝试查找搜索结果区域
-                search_results = soup.find_all(['div', 'ul', 'ol'], class_=lambda x: x and ('result' in x.lower() or 'list' in x.lower()))
-                
-                for result_area in search_results:
-                    links = result_area.find_all('a')
-                    for link in links:
-                        try:
-                            title = link.text.strip()
-                            if not title:
-                                continue
-                                
-                            link_url = link.get('href')
-                            if not link_url or link_url in processed_links:
-                                continue
-                                
-                            processed_links.add(link_url)
-                            
-                            title_clean = title.replace('[短剧]', '').strip()
-                            
-                            # 提取集数信息
-                            episode_match = re.search(r'（(\d+)集）', title_clean)
-                            episode_count = ''
-                            if episode_match:
-                                episode_count = episode_match.group(1) + '集'
-                            
-                            if not link_url.startswith('http'):
-                                link_url = urljoin(self.siteUrl, link_url)
-                            
-                            img = "https://duanjugou.top/favicon.ico"
-                            
-                            videos.append({
-                                "vod_id": link_url,
-                                "vod_name": title_clean,
-                                "vod_pic": img,
-                                "vod_remarks": episode_count
-                            })
-                        except Exception as e:
-                            continue
-                    
-                    if videos:  # 如果找到了视频，就不继续查找其他区域了
-                        break
-            
-            self.debugPrint(f"搜索结果数量: {len(videos)}")
+            self.debugPrint(f"最终找到的搜索结果数量: {len(videos)}")
             return videos
         except Exception as e:
             self.debugPrint(f"搜索异常: {str(e)}")
