@@ -88,6 +88,24 @@ class Spider(Spider):
             }
         return
     
+    def fetch(self, url, headers=None):
+        """统一的网络请求接口"""
+        if headers is None:
+            headers = {
+                "User-Agent": self.userAgent,
+                "Referer": self.siteUrl,
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+            }
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
+            response.raise_for_status()
+            return response
+        except Exception as e:
+            print(f"请求异常: {url}, 错误: {str(e)}")
+            return None
+        
     def isVideoFormat(self, url):
         # 对于网盘链接，不是直接的视频格式
         return False
@@ -115,37 +133,14 @@ class Spider(Spider):
         
         # 获取首页推荐视频
         try:
-            # result['list'] = self.homeVideoContent()['list']
-            result['list'] = self.shenyi()['list']
+            result['list'] = self.homeVideoContent()['list']
         except:
             result['list'] = []
         
         return result
     
-    def fetch(self, url, headers=None):
-        """统一的网络请求接口"""
-        if headers is None:
-            headers = {
-                "User-Agent": self.userAgent,
-                "Referer": self.siteUrl,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-            }
-        
-        try:
-            response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
-            response.raise_for_status()
-            return response
-        except Exception as e:
-            print(f"请求异常: {url}, 错误: {str(e)}")
-            return None
-    
     def homeVideoContent(self):
-        # result = self.shenyi()
-
-        # url = self.siteUrl
-        url = f"{self.siteUrl}/search.php?q=神医"
-        
+        url = self.siteUrl
         try:
             print(f"获取首页内容：{url}")  # 调试输出
             response = self.fetch(url)
@@ -541,65 +536,54 @@ class Spider(Spider):
     def searchContent(self, key, quick, pg=1):
         # 对搜索关键词进行URL编码
         url = f"{self.siteUrl}/search.php?q={key}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={key}"
-
-        try:            
-            response = self.fetch(url)
-            if not response:
-                print(f"搜索请求失败，URL: {url}")
-                return {'list': [], 'page': 1}
-            html_content = response.text
-            soup = BeautifulSoup(html_content, 'html.parser')    
-            # 查找搜索结果列表
-            main_list_section = soup.find('div', class_='erx-list-box')
-            item_list = main_list_section.find('ul', class_='erx-list')
-            videos = []
-            items = item_list.find_all('li', class_='item')
-            for item in items:
-                try:
-                    # 获取标题区域
-                    a_div = item.find('div', class_='a')
-                    if not a_div:
-                        continue
-                    # 提取链接和标题
-                    link_elem = a_div.find('a', class_='main')
-                    if not link_elem:
-                        continue
-                    title = link_elem.text.strip()
-                    link = link_elem.get('href')
-                    # 提取时间
-                    i_div = item.find('div', class_='i')
-                    time_text = ""
-                    if i_div:
-                        time_span = i_div.find('span', class_='time')
-                        if time_span:
-                            time_text = time_span.text.strip()
-                    
-                    if not link.startswith('http'):
-                        link = urljoin(self.siteUrl, link)
-                    # 使用默认图标
-                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
-                    videos.append({
-                        "vod_id": link.replace("https://duanjugou.top", ""),
-                        "vod_name": title,
-                        "vod_pic": img,
-                        "vod_remarks": time_text
-                    })
-                except Exception as e:
-                    print(f"处理搜索结果时出错: {str(e)}")
-            # 确保返回标准格式，即使视频列表为空
-            if not videos:
-                return {
-                    'list': [],
-                    'page': pg
-                }
-            
-            # 返回标准格式
-            return {
-                'list': videos,
-                'page': pg
-            }
-        except Exception as e:
-            return {'list': [], 'page': pg}
+        response = self.fetch(url)
+        if not response:
+            print(f"搜索请求失败，URL: {url}")
+            return {'list': [], 'page': 1}
+        html_content = response.text
+        soup = BeautifulSoup(html_content, 'html.parser')    
+        # 查找搜索结果列表
+        main_list_section = soup.find('div', class_='erx-list-box')
+        item_list = main_list_section.find('ul', class_='erx-list')
+        videos = []
+        items = item_list.find_all('li', class_='item')
+        for item in items:
+            try:
+                # 获取标题区域
+                a_div = item.find('div', class_='a')
+                if not a_div:
+                    continue
+                # 提取链接和标题
+                link_elem = a_div.find('a', class_='main')
+                if not link_elem:
+                    continue
+                title = link_elem.text.strip()
+                link = link_elem.get('href')
+                # 提取时间
+                i_div = item.find('div', class_='i')
+                time_text = ""
+                if i_div:
+                    time_span = i_div.find('span', class_='time')
+                    if time_span:
+                        time_text = time_span.text.strip()
+                
+                if not link.startswith('http'):
+                    link = urljoin(self.siteUrl, link)
+                # 使用默认图标
+                img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
+                videos.append({
+                    "vod_id": link.replace("https://duanjugou.top", ""),
+                    "vod_name": title,
+                    "vod_pic": img,
+                    "vod_remarks": time_text
+                })
+            except Exception as e:
+                print(f"处理搜索结果时出错: {str(e)}")
+        # 返回标准格式
+        return {
+            'list': videos,
+            'page': pg
+        }
     
     def searchContentPage(self, key, quick, pg=1):
         return self.searchContent(key, quick, pg)
