@@ -463,73 +463,32 @@ class Spider(Spider):
     
     def searchContent(self, key, quick, pg=1):
         # 对搜索关键词进行URL编码
-        try:
-            encoded_key = quote(key)
-            url = f"{self.siteUrl}/search.php?q={encoded_key}"
-            print(f"搜索关键词: {key}, 编码后: {encoded_key}")
-            print(f"搜索URL: {url}")
-        except Exception as e:
-            print(f"编码搜索关键词时出错: {str(e)}")
-            return {'list': []}
-        
-        # 处理分页
-        if pg > 1:
-            url = f"{url}&page={pg}"
-        
-        try:
-            # 确保使用正确的请求头
-            headers = {
-                "User-Agent": self.userAgent,
-                "Referer": self.siteUrl,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-            }
-            
+        url = f"{self.siteUrl}/search.php?q={key}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={key}"
+
+        try:            
             response = self.fetch(url)
             if not response:
                 print(f"搜索请求失败，URL: {url}")
-                return {'list': []}
-            
-            print(f"搜索请求状态码: {response.status_code}")
-            
+                return {'list': [], 'page': 1}
             html_content = response.text
-            
-            # 打印HTML内容的前100个字符，帮助调试
-            print(f"搜索HTML内容片段: {html_content[:100]}...")
-            
-            soup = BeautifulSoup(html_content, 'html.parser')
-            
+            soup = BeautifulSoup(html_content, 'html.parser')    
             # 查找搜索结果列表
             main_list_section = soup.find('div', class_='erx-list-box')
-            if not main_list_section:
-                print(f"未找到搜索结果erx-list-box容器")
-                return {'list': []}
-                
             item_list = main_list_section.find('ul', class_='erx-list')
-            if not item_list:
-                print(f"未找到搜索结果erx-list列表")
-                return {'list': []}
-            
             videos = []
-            
             items = item_list.find_all('li', class_='item')
-            print(f"搜索结果找到 {len(items)} 个项目")
-            
             for item in items:
                 try:
                     # 获取标题区域
                     a_div = item.find('div', class_='a')
                     if not a_div:
                         continue
-                    
                     # 提取链接和标题
                     link_elem = a_div.find('a', class_='main')
                     if not link_elem:
                         continue
-                    
                     title = link_elem.text.strip()
                     link = link_elem.get('href')
-                    
                     # 提取时间
                     i_div = item.find('div', class_='i')
                     time_text = ""
@@ -540,10 +499,8 @@ class Spider(Spider):
                     
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
-                    
                     # 使用默认图标
                     img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
-                    
                     videos.append({
                         "vod_id": link.replace("https://duanjugou.top", ""),
                         "vod_name": title,
@@ -552,35 +509,20 @@ class Spider(Spider):
                     })
                 except Exception as e:
                     print(f"处理搜索结果时出错: {str(e)}")
-                    continue
-            
-            print(f"搜索成功解析 {len(videos)} 个视频结果")
-            
             # 确保返回标准格式，即使视频列表为空
             if not videos:
-                print("警告：搜索结果为空，尝试返回空结果的标准格式")
                 return {
                     'list': [],
-                    'page': pg,
-                    'pagecount': 1,
-                    'limit': 20,
-                    'total': 0
+                    'page': pg
                 }
             
             # 返回标准格式
             return {
                 'list': videos,
-                'page': pg,
-                'pagecount': 1,  # 搜索结果通常只有一页
-                'limit': 20,
-                'total': len(videos)
+                'page': pg
             }
         except Exception as e:
-            print(f"搜索内容时出错: {str(e)}")
-            import traceback
-            print(traceback.format_exc())  # 打印完整错误堆栈
-            # 返回标准格式的空结果
-            return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+            return {'list': [], 'page': pg}
     
     def searchContentPage(self, key, quick, pg=1):
         return self.searchContent(key, quick, pg)
