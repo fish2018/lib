@@ -140,7 +140,8 @@ class Spider(Spider):
             return None
     
     def homeVideoContent(self):
-        self.shenyi()
+        result = self.shenyi()
+        return result
         # url = self.siteUrl
         
         # try:
