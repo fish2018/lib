@@ -23,10 +23,10 @@ class Spider(Spider):
         self.siteUrl = 'https://duanjugou.top'
         self.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
         self.cateManual = {
-            "总裁": "总裁",
-            "穿越": "穿越",
-            "闪婚": "闪婚",
-            "神医": "神医"
+            "总裁": "zc",
+            "穿越": "cy",
+            "闪婚": "sb",
+            "神医": "sy"
         }
     
     def getName(self):
@@ -220,6 +220,15 @@ class Spider(Spider):
         
     def shenyi(self, tid, pg):
         # url = f"{self.siteUrl}/search.php?q=神医"
+        if tid == "sy":
+            tid = "神医"
+        elif tid == "cy":
+            tid = "穿越"
+        elif tid == "sb":
+            tid = "闪婚"
+        elif tid == "zc":
+            tid = "总裁"    
+            
         url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
