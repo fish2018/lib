@@ -295,8 +295,7 @@ class Spider(Spider):
                         "vod_id": link.replace("https://duanjugou.top", ""),
                         "vod_name": title,
                         "vod_pic": img,
-                        # "vod_remarks": time_text
-                        "vod_remarks": tid
+                        "vod_remarks": time_text
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
