@@ -233,7 +233,7 @@ class Spider(Spider):
             tid = "总裁"
             url = f"{self.siteUrl}/search.php?q=总裁&page={pg}"  
 
-        # url = f"{self.siteUrl}/search.php?q={quote_plus(tid)}&page={pg}"
+        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
