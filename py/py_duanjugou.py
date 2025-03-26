@@ -213,55 +213,30 @@ class Spider(Spider):
             return {'list': []}
     
     def categoryContent(self, tid, pg, filter, extend):
-        # 直接处理标签关键词
-        encoded_keyword = quote(tid)
-        url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         print(f"处理标签关键词: {tid}, URL: {url}")
 
-        # 处理分页
-        if pg > 1:
-            url = f"{url}&page={pg}"
-
         try:
-            # print(f"获取分类页内容：{url}")  # 调试输出
             response = self.fetch(url)
-            if not response:
-                return {'list': []}
-            
             html_content = response.text
             soup = BeautifulSoup(html_content, 'html.parser')
-            
             # 根据网站实际结构，找到首页内容区域
-            main_list_section = soup.find('div', class_='erx-list-box')
-            if not main_list_section:
-                print(f"未找到erx-list-box容器")
-                return {'list': []}
-                
+            main_list_section = soup.find('div', class_='erx-list-box')                
             item_list = main_list_section.find('ul', class_='erx-list')
-            if not item_list:
-                print(f"未找到erx-list列表")
-                return {'list': []}
-            
-            videos = []
-            
             items = item_list.find_all('li', class_='item')
-            print(f"首页找到 {len(items)} 个项目")  # 调试输出
-            
+            videos = []
             for item in items:
                 try:
                     # 获取标题区域
                     a_div = item.find('div', class_='a')
                     if not a_div:
                         continue
-                    
                     # 提取链接和标题
                     link_elem = a_div.find('a', class_='main')
                     if not link_elem:
                         continue
-                    
                     title = link_elem.text.strip()
                     link = link_elem.get('href')
-                    
                     # 提取时间
                     i_div = item.find('div', class_='i')
                     time_text = ""
@@ -269,13 +244,10 @@ class Spider(Spider):
                         time_span = i_div.find('span', class_='time')
                         if time_span:
                             time_text = time_span.text.strip()
-                    
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
-                    
                     # 使用默认图标
                     img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
-                    
                     videos.append({
                         "vod_id": link.replace("https://duanjugou.top", ""),
                         "vod_name": title,
@@ -284,25 +256,8 @@ class Spider(Spider):
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
-                    continue
-            
             # 获取分页信息
-            try:
-                pager = soup.find('div', class_='pagebar')
-                if pager:
-                    page_text = pager.text
-                    max_page_match = re.search(r'共(\d+)页', page_text)
-                    if max_page_match:
-                        max_page = int(max_page_match.group(1))
-                        print(f"检测到总页数: {max_page}")
-                    else:
-                        max_page = pg
-                else:
-                    max_page = pg
-            except Exception as e:
-                print(f"获取分页信息出错: {str(e)}")
-                max_page = pg
-            
+            max_page = pg
             # 返回标准格式
             result = {
                 'list': videos,
@@ -311,7 +266,6 @@ class Spider(Spider):
                 'limit': 20,
                 'total': len(videos) * max_page
             }
-            print(f"分类内容获取完成，返回 {len(videos)} 个视频，共 {max_page} 页")
             return result
         except Exception as e:
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
