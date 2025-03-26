@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# 短剧狗爬虫 - 全网免费短剧网盘合集
 
+import sys
 import json
 import requests
 from urllib.parse import quote_plus, urljoin
@@ -8,14 +10,54 @@ import urllib.parse
 import re
 from bs4 import BeautifulSoup
 import time
+import argparse
 
-from spider import Spider
+# 处理导入问题
+try:
+    sys.path.append('..')
+    from base.spider import Spider
+except ModuleNotFoundError:
+    # 当作为独立脚本运行时，定义一个基础Spider类
+    class Spider:
+        def init(self, extend=""):
+            pass
+            
+        def homeContent(self, filter):
+            return {}
+            
+        def homeVideoContent(self):
+            return []
+            
+        def categoryContent(self, tid, pg, filter, extend):
+            return {}
+            
+        def detailContent(self, ids):
+            return {}
+            
+        def searchContent(self, key, quick):
+            return []
+            
+        def playerContent(self, flag, id, vipFlags):
+            return {}
+            
+        def localProxy(self, param):
+            return None
 
-class Duanjugou(Spider):
-    def __init__(self):
-        super().__init__()
+class DuanjugouSpider(Spider):
+    def init(self, extend=""):
         self.siteUrl = 'https://duanjugou.top'
         self.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+    
+    def getName(self):
+        return "短剧狗"
+    
+    def isVideoFormat(self, url):
+        # 对于网盘链接，不是直接的视频格式
+        return False
+    
+    def manualVideoCheck(self):
+        # 不需要手动检查
+        return False
     
     def homeContent(self, filter):
         result = {}
@@ -105,23 +147,33 @@ class Duanjugou(Spider):
                     print(f"数据: {data}")
         except:
             pass
+    
+    def fetch(self, url, headers=None):
+        """统一的网络请求接口"""
+        if headers is None:
+            headers = {
+                "User-Agent": self.userAgent,
+                "Referer": self.siteUrl,
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+                "Cache-Control": "no-cache"
+            }
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            return response
+        except Exception as e:
+            self.debugPrint(f"请求异常: {url}, 错误: {str(e)}")
+            return None
         
     def homeVideoContent(self):
         url = self.siteUrl
         
-        headers = {
-            "User-Agent": self.userAgent,
-            "Referer": self.siteUrl,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-            "Cache-Control": "no-cache"
-        }
-        
         try:
             self.debugPrint(f"正在请求首页: {url}")
-            response = requests.get(url, headers=headers, timeout=10)
-            if response.status_code != 200:
-                self.debugPrint(f"请求失败，状态码: {response.status_code}")
+            response = self.fetch(url)
+            if not response:
                 return []
             
             html_content = response.text
@@ -242,19 +294,10 @@ class Duanjugou(Spider):
             if pg != '1':
                 url = f"{self.siteUrl}/page_{pg}.html"
         
-        headers = {
-            "User-Agent": self.userAgent,
-            "Referer": self.siteUrl,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-            "Cache-Control": "no-cache"
-        }
-        
         try:
             self.debugPrint(f"正在请求分类页: {url}")
-            response = requests.get(url, headers=headers, timeout=10)
-            if response.status_code != 200:
-                self.debugPrint(f"请求失败，状态码: {response.status_code}")
+            response = self.fetch(url)
+            if not response:
                 return result
             
             html_content = response.text
@@ -373,19 +416,10 @@ class Duanjugou(Spider):
             
         video_id = ids[0]  # 视频页面URL
         
-        headers = {
-            "User-Agent": self.userAgent,
-            "Referer": self.siteUrl,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-            "Cache-Control": "no-cache"
-        }
-        
         try:
             self.debugPrint(f"正在请求详情页: {video_id}")
-            response = requests.get(video_id, headers=headers, timeout=10)
-            if response.status_code != 200:
-                self.debugPrint(f"请求失败，状态码: {response.status_code}")
+            response = self.fetch(video_id)
+            if not response:
                 return {}
             
             html_content = response.text
@@ -487,22 +521,13 @@ class Duanjugou(Spider):
             self.debugPrint(f"获取详情页异常: {str(e)}")
             return {}
     
-    def searchContent(self, key, quick):
+    def searchContent(self, key, quick, pg=1):
         search_url = f"{self.siteUrl}/search.php?q={quote_plus(key)}"
-        
-        headers = {
-            "User-Agent": self.userAgent,
-            "Referer": self.siteUrl,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-            "Cache-Control": "no-cache"
-        }
         
         try:
             self.debugPrint(f"正在搜索: {search_url}")
-            response = requests.get(search_url, headers=headers, timeout=10)
-            if response.status_code != 200:
-                self.debugPrint(f"搜索请求失败，状态码: {response.status_code}")
+            response = self.fetch(search_url)
+            if not response:
                 return []
             
             html_content = response.text
@@ -591,95 +616,64 @@ class Duanjugou(Spider):
         
         return result
     
-    def isVideoFormat(self, url):
-        # 对于网盘链接，不是直接的视频格式
-        return False
-    
-    def manualVideoCheck(self):
-        # 不需要手动检查
-        return False
-    
     def localProxy(self, param):
         # 当前场景不需要本地代理
-        return None
+        return None 
 
 # 用于本地测试
 if __name__ == "__main__":
-    import sys
+    spider = DuanjugouSpider()
+    spider.init()
     
-    spider = Duanjugou()
+    parser = argparse.ArgumentParser(description='短剧狗爬虫本地测试工具')
+    parser.add_argument('action', choices=['home', 'home_video', 'category', 'detail', 'search'], 
+                       help='要测试的功能: home(首页分类), home_video(首页视频), category(分类内容), detail(详情), search(搜索)')
+    parser.add_argument('--tid', default='latest', help='分类ID，用于category命令')
+    parser.add_argument('--pg', default='1', help='页码，用于category和search命令')
+    parser.add_argument('--filter', action='store_true', help='是否启用过滤器，用于home和category命令')
+    parser.add_argument('--extend', default='{}', help='扩展参数(JSON格式)，用于category命令')
+    parser.add_argument('--ids', default='', help='视频ID列表(逗号分隔)，用于detail命令')
+    parser.add_argument('--key', default='', help='搜索关键词，用于search命令')
+    parser.add_argument('--quick', action='store_true', help='是否启用快速搜索，用于search命令')
     
-    # 支持的测试命令
-    # python py_duanjugou.py home --filter=1
-    # python py_duanjugou.py home_video
-    # python py_duanjugou.py category --tid=latest --pg=1
-    # python py_duanjugou.py detail --ids=https://duanjugou.top/某个详情页地址
-    # python py_duanjugou.py search --key=关键词
+    args = parser.parse_args()
     
-    if len(sys.argv) > 1:
-        method = sys.argv[1]
+    if args.action == 'home':
+        # 测试homeContent方法
+        print('测试首页分类...')
+        result = spider.homeContent(filter=args.filter)
+        print(json.dumps(result, ensure_ascii=False, indent=4))
         
-        if method == 'home':
-            filter_param = False
-            for arg in sys.argv:
-                if arg.startswith('--filter='):
-                    filter_param = arg.split('=')[1] == '1'
+    elif args.action == 'home_video':
+        # 测试homeVideoContent方法
+        print('测试首页视频内容...')
+        result = spider.homeVideoContent()
+        print(json.dumps(result, ensure_ascii=False, indent=4))
+        
+    elif args.action == 'category':
+        # 测试categoryContent方法
+        print(f'测试分类 {args.tid} 第 {args.pg} 页内容...')
+        extend_dict = json.loads(args.extend)
+        result = spider.categoryContent(tid=args.tid, pg=args.pg, filter=args.filter, extend=extend_dict)
+        print(json.dumps(result, ensure_ascii=False, indent=4))
+        
+    elif args.action == 'detail':
+        # 测试detailContent方法
+        if not args.ids:
+            print('错误: 必须提供--ids参数')
+            sys.exit(1)
             
-            result = spider.homeContent(filter=filter_param)
-            print(json.dumps(result, ensure_ascii=False, indent=4))
+        ids = args.ids.split(',')
+        print(f'测试 {len(ids)} 个ID的详情内容...')
+        result = spider.detailContent(ids)
+        print(json.dumps(result, ensure_ascii=False, indent=4))
         
-        elif method == 'home_video':
-            result = spider.homeVideoContent()
-            print(json.dumps(result, ensure_ascii=False, indent=4))
-        
-        elif method == 'category':
-            tid = 'latest'
-            pg = '1'
-            extend = {}
-            filter_param = False
+    elif args.action == 'search':
+        # 测试searchContent方法
+        if not args.key:
+            print('错误: 必须提供--key参数')
+            sys.exit(1)
             
-            for arg in sys.argv:
-                if arg.startswith('--tid='):
-                    tid = arg.split('=')[1]
-                elif arg.startswith('--pg='):
-                    pg = arg.split('=')[1]
-                elif arg.startswith('--filter='):
-                    filter_param = arg.split('=')[1] == '1'
-                elif arg.startswith('--extend='):
-                    extend_str = arg.split('=')[1]
-                    extend = json.loads(extend_str)
-            
-            result = spider.categoryContent(tid=tid, pg=pg, filter=filter_param, extend=extend)
-            print(json.dumps(result, ensure_ascii=False, indent=4))
-        
-        elif method == 'detail':
-            ids = []
-            for arg in sys.argv:
-                if arg.startswith('--ids='):
-                    ids = [arg.split('=')[1]]
-            
-            if ids:
-                result = spider.detailContent(ids=ids)
-                print(json.dumps(result, ensure_ascii=False, indent=4))
-            else:
-                print("Error: No ids provided")
-        
-        elif method == 'search':
-            key = ''
-            for arg in sys.argv:
-                if arg.startswith('--key='):
-                    key = arg.split('=')[1]
-            
-            if key:
-                result = spider.searchContent(key=key, quick=True)
-                print(json.dumps(result, ensure_ascii=False, indent=4))
-            else:
-                print("Error: No key provided")
-        
-        else:
-            print(f"Unsupported method: {method}")
-            print("Supported methods: home, home_video, category, detail, search")
-    else:
-        # 默认测试首页
-        result = spider.homeContent(filter=True)
+        print(f'搜索关键词 "{args.key}" 第 {args.pg} 页结果...')
+        result = spider.searchContent(key=args.key, quick=args.quick, pg=args.pg)
         print(json.dumps(result, ensure_ascii=False, indent=4)) 
