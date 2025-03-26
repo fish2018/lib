@@ -219,18 +219,18 @@ class Spider(Spider):
         #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self, tid, pg):
-        # url = f"{self.siteUrl}/search.php?q=神医"
-        if tid == "sy":
-            tid = "神医"
-        elif tid == "cy":
-            tid = "穿越"
-        elif tid == "sb":
-            tid = "闪婚"
-        elif tid == "zc":
-            tid = "总裁"    
+        url = f"{self.siteUrl}/search.php?q=神医"
+        # if tid == "sy":
+        #     tid = "神医"
+        # elif tid == "cy":
+        #     tid = "穿越"
+        # elif tid == "sb":
+        #     tid = "闪婚"
+        # elif tid == "zc":
+        #     tid = "总裁"    
             
         # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
-        url = f"{self.siteUrl}/search.php?q={tid}"
+        # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
         try:
@@ -291,7 +291,8 @@ class Spider(Spider):
                         "vod_id": link.replace("https://duanjugou.top", ""),
                         "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": time_text
+                        # "vod_remarks": time_text
+                        "vod_remarks": tid
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
