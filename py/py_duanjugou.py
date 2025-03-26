@@ -221,11 +221,9 @@ class Spider(Spider):
         # 处理分页
         if pg > 1:
             url = f"{url}&page={pg}"
-        
-        print(f"分类请求最终URL: {url}")  # 调试输出
 
         try:
-            print(f"获取首页内容：{url}")  # 调试输出
+            # print(f"获取分类页内容：{url}")  # 调试输出
             response = self.fetch(url)
             if not response:
                 return {'list': []}
@@ -307,18 +305,15 @@ class Spider(Spider):
             
             # 返回标准格式
             result = {
-                'class': [{'type_id': '娇妻', 'type_name': '娇妻'}, {'type_id': '总裁', 'type_name': '总裁'}, {'type_id': '都市', 'type_name': '都市'}, {'type_id': '穿越', 'type_name': '穿越'}, {'type_id': '闪婚', 'type_name': '闪婚'}, {'type_id': '神医', 'type_name': '神医'}], 'filters': {'tag-female': [{'key': 'tag', 'name': '标签', 'value': [{'n': '全部', 'v': ''}, {'n': '娇妻', 'v': '娇妻'}, {'n': '阿姨', 'v': '阿姨'}, {'n': '夫人', 'v': '夫人'}, {'n': '女友', 'v': '女友'}, {'n': '老婆', 'v': '老婆'}, {'n': '千金', 'v': '千金'}, {'n': '公主', 'v': '公主'}, {'n': '女王', 'v': '女王'}]}], 'tag-male': [{'key': 'tag', 'name': '标签', 'value': [{'n': '全部', 'v': ''}, {'n': '少爷', 'v': '少爷'}, {'n': '王爷', 'v': '王爷'}, {'n': '男友', 'v': '男友'}, {'n': '老公', 'v': '老公'}, {'n': '赘婿', 'v': '赘婿'}]}]}, 
                 'list': videos,
                 'page': pg,
                 'pagecount': max_page,
                 'limit': 20,
                 'total': len(videos) * max_page
             }
-            
             print(f"分类内容获取完成，返回 {len(videos)} 个视频，共 {max_page} 页")
             return result
         except Exception as e:
-            print(f"获取首页内容时出错: {str(e)}")
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
 
@@ -536,7 +531,8 @@ class Spider(Spider):
                 "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
             }
             
-            response = self.fetch(url, headers)
+            # response = self.fetch(url, headers)
+            response = requests.get(url, headers=headers)
             if not response:
                 print(f"搜索请求失败，URL: {url}")
                 return {'list': []}
