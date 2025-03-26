@@ -29,12 +29,12 @@ class Spider(Spider):
     def init(self, extend=""):
         # 分类配置 - 添加推荐分类和热门标签
         self.cateManual = {
-            "娇妻": "/search.php?q=%E5%A8%87%E5%A6%BB",
-            "总裁": "/search.php?q=%E6%80%BB%E8%A3%81",
-            "都市": "/search.php?q=%E9%83%BD%E5%B8%82",
-            "穿越": "/search.php?q=%E7%A9%BF%E8%B6%8A",
-            "闪婚": "/search.php?q=%E9%97%AA%E5%A9%9A",
-            "神医": "/search.php?q=%E7%A5%9E%E5%8C%BB"
+            "娇妻": "娇妻",
+            "总裁": "总裁",
+            "都市": "都市",
+            "穿越": "穿越",
+            "闪婚": "闪婚",
+            "神医": "神医"
         }
         
         # Pyramid应用必要配置项
@@ -227,7 +227,22 @@ class Spider(Spider):
                 print(f"将分类名称 '{original_tid}' 转换为对应ID: {tid}")
                 break
 
-        url = f"{self.siteUrl}{tid}"
+        if tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
+            # 直接处理标签关键词
+            keyword = tid
+            encoded_keyword = quote(keyword)
+            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+            print(f"处理标签关键词: {keyword}, URL: {url}")
+        else:
+            # 首页内容 - 重用homeVideoContent方法
+            print(f"处理首页分类")
+            result = self.homeVideoContent()
+            # 添加分页信息
+            result['page'] = pg
+            result['pagecount'] = 1
+            result['limit'] = 20
+            result['total'] = len(result['list'])
+            return result
         
         # 处理分页
         if pg > 1:
