@@ -27,7 +27,7 @@ class Spider(Spider):
         return "短剧狗"
     
     def init(self, extend=""):
-        # 分类配置 - 更新为热门标签对应的搜索
+        # 分类配置 - 只保留热门标签对应的搜索
         self.cateManual = {
             "娇妻": "search.php?q=%E5%A8%87%E5%A6%BB",
             "总裁": "search.php?q=%E6%80%BB%E8%A3%81",
@@ -232,7 +232,7 @@ class Spider(Spider):
                 tag = extend["tag"]
                 url = f"{self.siteUrl}/tags/{tag}.html"
         elif tid.startswith("search.php"):
-            # 这是搜索类分类
+            # 这是搜索类分类，直接使用完整URL
             url = f"{self.siteUrl}/{tid}"
         
         # 处理分页
@@ -241,6 +241,8 @@ class Spider(Spider):
                 url = f"{url}&page={pg}"
             else:
                 url = f"{url}?page={pg}"
+        
+        print(f"分类请求URL: {url}")  # 调试输出
         
         try:
             response = self.fetch(url)
@@ -253,15 +255,19 @@ class Spider(Spider):
             # 根据网站实际结构，找到分类内容区域
             main_list_section = soup.find('div', class_='erx-list-box')
             if not main_list_section:
+                print(f"未找到erx-list-box容器")
                 return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
                 
             item_list = main_list_section.find('ul', class_='erx-list')
             if not item_list:
+                print(f"未找到erx-list列表")
                 return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
             
             videos = []
             
             items = item_list.find_all('li', class_='item')
+            print(f"找到 {len(items)} 个项目")  # 调试输出
+            
             for item in items:
                 try:
                     # 获取标题区域
@@ -373,17 +379,30 @@ class Spider(Spider):
             pan_links = []
             download_links = []
             
-            # 使用正则表达式查找所有可能的链接
-            link_pattern = re.compile(r"((?!https?://t\.me)(?:https?://[^\s'\"<>【】\n]+|magnet:\?xt=urn:btih:[a-zA-Z0-9]+))")
+            # 使用正则表达式查找所有可能的链接 - 改进版本，排除末尾的...
+            link_pattern = re.compile(r"((?!https?://t\.me)(?:https?://[^\s'\"<>【】\n\.]+(?:\.[^\s'\"<>【】\n\.]+)+(?:/[^\s'\"<>【】\n\.]*)?|magnet:\?xt=urn:btih:[a-zA-Z0-9]+))")
             all_links = link_pattern.findall(html_content)
             
-            # 清理链接中可能包含的HTML标签
-            cleaned_links = []
+            # 链接去重和清理
+            link_map = {}  # 用于去重
+            
+            # 清理链接函数
+            def clean_link(link):
+                # 移除尾部非URL字符
+                clean = re.sub(r'[\'">].*$', '', link)
+                # 移除末尾的省略号
+                clean = re.sub(r'\.{3,}$', '', clean)
+                # 标准化链接 - 移除URL末尾的斜杠
+                clean = clean.rstrip('/')
+                return clean
+            
+            # 处理从正则表达式找到的链接
             for link in all_links:
-                # 清理链接，移除尾部的HTML标签
-                clean_link = re.sub(r'[\'">].*$', '', link)
-                if clean_link and clean_link not in cleaned_links:
-                    cleaned_links.append(clean_link)
+                clean_link_str = clean_link(link)
+                if clean_link_str and len(clean_link_str) > 10:  # 确保链接有效
+                    base_url = clean_link_str.split('?')[0]  # 用于基本去重
+                    if base_url not in link_map:
+                        link_map[base_url] = clean_link_str
             
             # 查找页面中的所有链接元素
             a_tags = main_content.find_all('a', href=True)
@@ -391,9 +410,14 @@ class Spider(Spider):
                 href = a.get('href', '').strip()
                 # 过滤非法链接并清理
                 if href and not href.startswith('#') and not href.startswith('javascript:'):
-                    clean_href = re.sub(r'[\'">].*$', '', href)
-                    if clean_href and clean_href not in cleaned_links:
-                        cleaned_links.append(clean_href)
+                    clean_href = clean_link(href)
+                    if clean_href and len(clean_href) > 10:
+                        base_url = clean_href.split('?')[0]
+                        if base_url not in link_map:
+                            link_map[base_url] = clean_href
+            
+            # 转换去重后的链接映射为列表
+            cleaned_links = list(link_map.values())
             
             # 处理所有找到的链接
             for href in cleaned_links:
@@ -404,7 +428,7 @@ class Spider(Spider):
                 # 获取链接文本（如果是从a标签提取的）
                 text = ""
                 for a in a_tags:
-                    if a.get('href') == href:
+                    if clean_link(a.get('href', '')) == href:
                         text = a.text.strip()
                         break
                 
