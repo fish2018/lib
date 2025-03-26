@@ -143,8 +143,8 @@ class Spider(Spider):
     def homeVideoContent(self):
         # result = self.shenyi()
 
-        url = self.siteUrl
-        # url = f"{self.siteUrl}/search.php?q=神医"
+        # url = self.siteUrl
+        url = f"{self.siteUrl}/search.php?q=神医"
         
         try:
             print(f"获取首页内容：{url}")  # 调试输出
