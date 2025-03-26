@@ -29,12 +29,12 @@ class Spider(Spider):
     def init(self, extend=""):
         # 分类配置 - 添加推荐分类和热门标签
         self.cateManual = {
-            "娇妻": "search.php?q=%E5%A8%87%E5%A6%BB",
-            "总裁": "search.php?q=%E6%80%BB%E8%A3%81",
-            "都市": "search.php?q=%E9%83%BD%E5%B8%82",
-            "穿越": "search.php?q=%E7%A9%BF%E8%B6%8A",
-            "闪婚": "search.php?q=%E9%97%AA%E5%A9%9A",
-            "神医": "search.php?q=%E7%A5%9E%E5%8C%BB"
+            "娇妻": "/search.php?q=%E5%A8%87%E5%A6%BB",
+            "总裁": "/search.php?q=%E6%80%BB%E8%A3%81",
+            "都市": "/search.php?q=%E9%83%BD%E5%B8%82",
+            "穿越": "/search.php?q=%E7%A9%BF%E8%B6%8A",
+            "闪婚": "/search.php?q=%E9%97%AA%E5%A9%9A",
+            "神医": "/search.php?q=%E7%A5%9E%E5%8C%BB"
         }
         
         # Pyramid应用必要配置项
@@ -404,6 +404,18 @@ class Spider(Spider):
                 print(f"获取分页信息出错: {str(e)}")
                 max_page = pg
             
+            # 确保视频列表非空
+            if not videos:
+                print("警告：视频列表为空，尝试返回空结果的标准格式")
+                return {
+                    'list': [],
+                    'page': pg,
+                    'pagecount': max_page,
+                    'limit': 20,
+                    'total': 0
+                }
+            
+            # 返回标准格式
             result = {
                 'list': videos,
                 'page': pg,
@@ -419,6 +431,7 @@ class Spider(Spider):
             print(f"获取分类内容时出错: {str(e)}")
             import traceback
             print(traceback.format_exc())  # 打印完整错误堆栈
+            # 返回标准格式的空结果
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
     
     def detailContent(self, ids):
@@ -703,12 +716,32 @@ class Spider(Spider):
                     continue
             
             print(f"搜索成功解析 {len(videos)} 个视频结果")
-            return {'list': videos}
+            
+            # 确保返回标准格式，即使视频列表为空
+            if not videos:
+                print("警告：搜索结果为空，尝试返回空结果的标准格式")
+                return {
+                    'list': [],
+                    'page': pg,
+                    'pagecount': 1,
+                    'limit': 20,
+                    'total': 0
+                }
+            
+            # 返回标准格式
+            return {
+                'list': videos,
+                'page': pg,
+                'pagecount': 1,  # 搜索结果通常只有一页
+                'limit': 20,
+                'total': len(videos)
+            }
         except Exception as e:
             print(f"搜索内容时出错: {str(e)}")
             import traceback
             print(traceback.format_exc())  # 打印完整错误堆栈
-            return {'list': []}
+            # 返回标准格式的空结果
+            return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
     
     def searchContentPage(self, key, quick, pg=1):
         return self.searchContent(key, quick, pg)
