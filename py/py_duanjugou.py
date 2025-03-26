@@ -275,10 +275,8 @@ class Spider(Spider):
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self):
-        # url = f"{self.siteUrl}/search.php?q=神医"
+        url = f"{self.siteUrl}/search.php?q=神医"
         # print(f"处理标签关键词: 神医, URL: {url}")
-
-        url = self.siteUrl
         
         try:
             print(f"获取首页内容：{url}")  # 调试输出
