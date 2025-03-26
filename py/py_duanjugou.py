@@ -25,7 +25,7 @@ class Spider(Spider):
         self.cateManual = {
             "总裁": "zc",
             "穿越": "cy",
-            "闪婚": "sh",
+            "闪婚": "闪婚",
             "神医": "sy"
         }
     
@@ -219,7 +219,7 @@ class Spider(Spider):
         #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self, tid, pg):
-        url = f"{self.siteUrl}/search.php?q=神医"
+        # url = f"{self.siteUrl}/search.php?q=神医"
         # if tid == "sy":
         #     tid = "神医"
         # elif tid == "cy":
@@ -230,7 +230,7 @@ class Spider(Spider):
         #     tid = "总裁"
         if tid == 'cy':    
             url = f"{self.siteUrl}/search.php?q=穿越"    
-        # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
