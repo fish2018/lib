@@ -27,16 +27,14 @@ class Spider(Spider):
         return "短剧狗"
     
     def init(self, extend=""):
-        # 分类配置
+        # 分类配置 - 更新为热门标签对应的搜索
         self.cateManual = {
-            "最新内容": "latest",
-            "24小时热门": "hot-day",
-            "1周热门": "hot-week",
-            "女性标签": "tag-female",
-            "男性标签": "tag-male",
-            "场景职业": "tag-scene",
-            "爽设标签": "tag-power",
-            "单字标签": "tag-single"
+            "娇妻": "search.php?q=%E5%A8%87%E5%A6%BB",
+            "总裁": "search.php?q=%E6%80%BB%E8%A3%81",
+            "都市": "search.php?q=%E9%83%BD%E5%B8%82",
+            "穿越": "search.php?q=%E7%A9%BF%E8%B6%8A",
+            "闪婚": "search.php?q=%E9%97%AA%E5%A9%9A",
+            "神医": "search.php?q=%E7%A5%9E%E5%8C%BB"
         }
         
         # Pyramid应用必要配置项
@@ -233,6 +231,9 @@ class Spider(Spider):
             if "tag" in extend and extend["tag"]:
                 tag = extend["tag"]
                 url = f"{self.siteUrl}/tags/{tag}.html"
+        elif tid.startswith("search.php"):
+            # 这是搜索类分类
+            url = f"{self.siteUrl}/{tid}"
         
         # 处理分页
         if pg > 1:
