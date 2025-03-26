@@ -155,62 +155,68 @@ class Spider(Spider):
             return {'list': []}
     
     def categoryContent(self, tid, pg, filter, extend):
-        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
-        print(f"处理标签关键词: {tid}, URL: {url}")
+        result = self.shenyi()
+        result['page'] = pg
+        result['pagecount'] = 9999
+        result['limit'] = 90
+        result['total'] = 999999
+        return result
+        # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        # print(f"处理标签关键词: {tid}, URL: {url}")
 
-        try:
-            response = self.fetch(url)
-            html_content = response.text
-            soup = BeautifulSoup(html_content, 'html.parser')
-            # 根据网站实际结构，找到首页内容区域
-            main_list_section = soup.find('div', class_='erx-list-box')                
-            item_list = main_list_section.find('ul', class_='erx-list')
-            items = item_list.find_all('li', class_='item')
-            videos = []
-            for item in items:
-                try:
-                    # 获取标题区域
-                    a_div = item.find('div', class_='a')
-                    if not a_div:
-                        continue
-                    # 提取链接和标题
-                    link_elem = a_div.find('a', class_='main')
-                    if not link_elem:
-                        continue
-                    title = link_elem.text.strip()
-                    link = link_elem.get('href')
-                    # 提取时间
-                    i_div = item.find('div', class_='i')
-                    time_text = ""
-                    if i_div:
-                        time_span = i_div.find('span', class_='time')
-                        if time_span:
-                            time_text = time_span.text.strip()
-                    if not link.startswith('http'):
-                        link = urljoin(self.siteUrl, link)
-                    # 使用默认图标
-                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
-                    videos.append({
-                        "vod_id": link.replace("https://duanjugou.top", ""),
-                        "vod_name": title,
-                        "vod_pic": img,
-                        "vod_remarks": time_text
-                    })
-                except Exception as e:
-                    print(f"处理单个短剧时出错: {str(e)}")
-            # 获取分页信息
-            max_page = pg
-            # 返回标准格式
-            result = {
-                'list': videos,
-                'page': pg,
-                'pagecount': max_page,
-                'limit': 20,
-                'total': len(videos) * max_page
-            }
-            return result
-        except Exception as e:
-            return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+        # try:
+        #     response = self.fetch(url)
+        #     html_content = response.text
+        #     soup = BeautifulSoup(html_content, 'html.parser')
+        #     # 根据网站实际结构，找到首页内容区域
+        #     main_list_section = soup.find('div', class_='erx-list-box')                
+        #     item_list = main_list_section.find('ul', class_='erx-list')
+        #     items = item_list.find_all('li', class_='item')
+        #     videos = []
+        #     for item in items:
+        #         try:
+        #             # 获取标题区域
+        #             a_div = item.find('div', class_='a')
+        #             if not a_div:
+        #                 continue
+        #             # 提取链接和标题
+        #             link_elem = a_div.find('a', class_='main')
+        #             if not link_elem:
+        #                 continue
+        #             title = link_elem.text.strip()
+        #             link = link_elem.get('href')
+        #             # 提取时间
+        #             i_div = item.find('div', class_='i')
+        #             time_text = ""
+        #             if i_div:
+        #                 time_span = i_div.find('span', class_='time')
+        #                 if time_span:
+        #                     time_text = time_span.text.strip()
+        #             if not link.startswith('http'):
+        #                 link = urljoin(self.siteUrl, link)
+        #             # 使用默认图标
+        #             img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
+        #             videos.append({
+        #                 "vod_id": link.replace("https://duanjugou.top", ""),
+        #                 "vod_name": title,
+        #                 "vod_pic": img,
+        #                 "vod_remarks": time_text
+        #             })
+        #         except Exception as e:
+        #             print(f"处理单个短剧时出错: {str(e)}")
+        #     # 获取分页信息
+        #     max_page = pg
+        #     # 返回标准格式
+        #     result = {
+        #         'list': videos,
+        #         'page': pg,
+        #         'pagecount': max_page,
+        #         'limit': 20,
+        #         'total': len(videos) * max_page
+        #     }
+        #     return result
+        # except Exception as e:
+        #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self):
         url = f"{self.siteUrl}/search.php?q=神医"
