@@ -226,23 +226,8 @@ class Spider(Spider):
                 tid = v
                 print(f"将分类名称 '{original_tid}' 转换为对应ID: {tid}")
                 break
-        
-        if tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
-            # 直接处理标签关键词
-            keyword = tid
-            encoded_keyword = quote(keyword)
-            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
-            print(f"处理标签关键词: {keyword}, URL: {url}")
-        else:
-            # 首页内容 - 重用homeVideoContent方法
-            print(f"处理首页分类")
-            result = self.homeVideoContent()
-            # 添加分页信息
-            result['page'] = pg
-            result['pagecount'] = 1
-            result['limit'] = 20
-            result['total'] = len(result['list'])
-            return result
+
+        url = f"{self.siteUrl}{tid}"
         
         # 处理分页
         if pg > 1:
