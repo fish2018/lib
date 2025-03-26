@@ -229,7 +229,8 @@ class Spider(Spider):
         elif tid == "zc":
             tid = "总裁"    
             
-        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
         try:
