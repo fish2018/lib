@@ -4,7 +4,7 @@
 
 import sys
 import requests
-from urllib.parse import urljoin, quote
+from urllib.parse import urljoin, quote_plus
 import re
 from bs4 import BeautifulSoup
 
@@ -233,7 +233,7 @@ class Spider(Spider):
             tid = "总裁"
             url = f"{self.siteUrl}/search.php?q=总裁"  
 
-        # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        url = f"{self.siteUrl}/search.php?q={quote_plus(tid)}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={quote_plus(tid)}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
