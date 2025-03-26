@@ -233,16 +233,16 @@ class Spider(Spider):
             encoded_keyword = quote(keyword)
             url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
             print(f"处理标签关键词: {keyword}, URL: {url}")
-        else:
-            # 首页内容 - 重用homeVideoContent方法
-            print(f"处理首页分类")
-            result = self.homeVideoContent()
-            # 添加分页信息
-            result['page'] = pg
-            result['pagecount'] = 1
-            result['limit'] = 20
-            result['total'] = len(result['list'])
-            return result
+        # else:
+        #     # 首页内容 - 重用homeVideoContent方法
+        #     print(f"处理首页分类")
+        #     result = self.homeVideoContent()
+        #     # 添加分页信息
+        #     result['page'] = pg
+        #     result['pagecount'] = 1
+        #     result['limit'] = 20
+        #     result['total'] = len(result['list'])
+        #     return result
         
         # 处理分页
         if pg > 1:
@@ -262,10 +262,13 @@ class Spider(Spider):
                 "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
             }
             
-            response = self.fetch(url, headers)
+            # response = self.fetch(url, headers)
+            response = self.fetch(url)
             if not response:
-                print(f"请求失败，返回None")
-                return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+                return {'list': []}
+            # if not response:
+            #     print(f"请求失败，返回None")
+            #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
             
             html_content = response.text
             soup = BeautifulSoup(html_content, 'html.parser')
@@ -323,9 +326,7 @@ class Spider(Spider):
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
-                    continue
-
-            
+                    continue     
             
             # 获取分页信息
             try:
