@@ -155,7 +155,7 @@ class Spider(Spider):
             return {'list': []}
     
     def categoryContent(self, tid, pg, filter, extend):
-        result = self.shenyi()
+        result = self.shenyi(tid, pg)
         result['page'] = pg
         result['pagecount'] = 9999
         result['limit'] = 90
@@ -218,8 +218,9 @@ class Spider(Spider):
         # except Exception as e:
         #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
-    def shenyi(self):
-        url = f"{self.siteUrl}/search.php?q=神医"
+    def shenyi(self, tid, pg):
+        # url = f"{self.siteUrl}/search.php?q=神医"
+        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
         try:
