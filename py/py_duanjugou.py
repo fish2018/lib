@@ -213,62 +213,23 @@ class Spider(Spider):
             return {'list': []}
     
     def categoryContent(self, tid, pg, filter, extend):
-        # 构建请求URL
-        url = self.siteUrl
-        
-        # 先进行id判断和处理，确保能处理各种格式的分类ID
-        print(f"接收到分类ID: {tid}")  # 调试输出
-        
-        # 检查是否只传递了分类名称（如"娇妻"），而非完整ID
-        original_tid = tid
-        for k, v in self.cateManual.items():
-            if tid == k:  # 如果传入的是分类名称，转换为对应的ID
-                tid = v
-                print(f"将分类名称 '{original_tid}' 转换为对应ID: {tid}")
-                break
+        # 直接处理标签关键词
+        keyword = tid
+        encoded_keyword = quote(keyword)
+        url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+        print(f"处理标签关键词: {keyword}, URL: {url}")
 
-        if tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
-            # 直接处理标签关键词
-            keyword = tid
-            encoded_keyword = quote(keyword)
-            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
-            print(f"处理标签关键词: {keyword}, URL: {url}")
-        # else:
-        #     # 首页内容 - 重用homeVideoContent方法
-        #     print(f"处理首页分类")
-        #     result = self.homeVideoContent()
-        #     # 添加分页信息
-        #     result['page'] = pg
-        #     result['pagecount'] = 1
-        #     result['limit'] = 20
-        #     result['total'] = len(result['list'])
-        #     return result
-        
         # 处理分页
         if pg > 1:
-            if "?" in url:
-                url = f"{url}&page={pg}"
-            else:
-                url = f"{url}?page={pg}"
+            url = f"{url}&page={pg}"
         
         print(f"分类请求最终URL: {url}")  # 调试输出
-        
+
         try:
-            # 确保使用正确的User-Agent
-            headers = {
-                "User-Agent": self.userAgent,
-                "Referer": self.siteUrl,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
-            }
-            
-            # response = self.fetch(url, headers)
+            print(f"获取首页内容：{url}")  # 调试输出
             response = self.fetch(url)
             if not response:
                 return {'list': []}
-            # if not response:
-            #     print(f"请求失败，返回None")
-            #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
             
             html_content = response.text
             soup = BeautifulSoup(html_content, 'html.parser')
@@ -326,7 +287,7 @@ class Spider(Spider):
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
-                    continue     
+                    continue
             
             # 获取分页信息
             try:
@@ -345,7 +306,6 @@ class Spider(Spider):
                 print(f"获取分页信息出错: {str(e)}")
                 max_page = pg
             
-            
             # 返回标准格式
             result = {
                 'list': videos,
@@ -356,14 +316,13 @@ class Spider(Spider):
             }
             
             print(f"分类内容获取完成，返回 {len(videos)} 个视频，共 {max_page} 页")
-            
             return result
         except Exception as e:
-            print(f"获取分类内容时出错: {str(e)}")
-            import traceback
-            print(traceback.format_exc())  # 打印完整错误堆栈
-            # 返回标准格式的空结果
+            print(f"获取首页内容时出错: {str(e)}")
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+        
+
+
     
     def detailContent(self, ids):
         # 解析详情页面URL
