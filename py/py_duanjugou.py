@@ -197,7 +197,7 @@ class Spider(Spider):
                     img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
-                        "vod_id": link,
+                        "vod_id": link.replace("https://duanjugou.top/", ""),
                         "vod_name": title,
                         "vod_pic": img,
                         "vod_remarks": time_text
@@ -376,7 +376,7 @@ class Spider(Spider):
                     img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
-                        "vod_id": link,
+                        "vod_id": link.replace("https://duanjugou.top/", ""),
                         "vod_name": title,
                         "vod_pic": img,
                         "vod_remarks": time_text
@@ -706,7 +706,7 @@ class Spider(Spider):
                     img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
                     videos.append({
-                        "vod_id": link,
+                        "vod_id": link.replace("https://duanjugou.top/", ""),
                         "vod_name": title,
                         "vod_pic": img,
                         "vod_remarks": time_text
