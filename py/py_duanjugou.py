@@ -7,7 +7,6 @@ from urllib.parse import urljoin, quote_plus
 import re
 from bs4 import BeautifulSoup
 
-# 修复导入路径问题
 sys.path.append('../../')
 try:
     from base.spider import Spider
@@ -165,7 +164,6 @@ class Spider(Spider):
         url = f"{self.siteUrl}/search.php?q={tid}&page={pg}"
 
         try:
-            print(f"获取首页内容：{url}")  # 调试输出
             response = self.fetch(url)
             if not response:
                 return {'list': []}
@@ -187,7 +185,6 @@ class Spider(Spider):
             videos = []
             
             items = item_list.find_all('li', class_='item')
-            print(f"首页找到 {len(items)} 个项目")  # 调试输出
             
             for item in items:
                 try:
@@ -228,7 +225,6 @@ class Spider(Spider):
                     print(f"处理单个短剧时出错: {str(e)}")
                     continue
             
-            print(f"首页解析完成，共获取到 {len(videos)} 个视频")  # 调试输出
             return {'list': videos}
         except Exception as e:
             print(f"获取首页内容时出错: {str(e)}")
@@ -433,7 +429,6 @@ class Spider(Spider):
         return self.searchContent(key, quick, pg)
     
     def playerContent(self, flag, id, vipFlags):
-        # 对于网盘链接，直接返回原始链接让用户在浏览器中打开
         return {
             "parse": 0,
             "url": id,
