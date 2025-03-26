@@ -140,79 +140,79 @@ class Spider(Spider):
             return None
     
     def homeVideoContent(self):
-        result = self.shenyi()
-        return result
-        # url = self.siteUrl
+        # result = self.shenyi()
+
+        url = self.siteUrl
         
-        # try:
-        #     print(f"获取首页内容：{url}")  # 调试输出
-        #     response = self.fetch(url)
-        #     if not response:
-        #         return {'list': []}
+        try:
+            print(f"获取首页内容：{url}")  # 调试输出
+            response = self.fetch(url)
+            if not response:
+                return {'list': []}
             
-        #     html_content = response.text
-        #     soup = BeautifulSoup(html_content, 'html.parser')
+            html_content = response.text
+            soup = BeautifulSoup(html_content, 'html.parser')
             
-        #     # 根据网站实际结构，找到首页内容区域
-        #     main_list_section = soup.find('div', class_='erx-list-box')
-        #     if not main_list_section:
-        #         print(f"未找到erx-list-box容器")
-        #         return {'list': []}
+            # 根据网站实际结构，找到首页内容区域
+            main_list_section = soup.find('div', class_='erx-list-box')
+            if not main_list_section:
+                print(f"未找到erx-list-box容器")
+                return {'list': []}
                 
-        #     item_list = main_list_section.find('ul', class_='erx-list')
-        #     if not item_list:
-        #         print(f"未找到erx-list列表")
-        #         return {'list': []}
+            item_list = main_list_section.find('ul', class_='erx-list')
+            if not item_list:
+                print(f"未找到erx-list列表")
+                return {'list': []}
             
-        #     videos = []
+            videos = []
             
-        #     items = item_list.find_all('li', class_='item')
-        #     print(f"首页找到 {len(items)} 个项目")  # 调试输出
+            items = item_list.find_all('li', class_='item')
+            print(f"首页找到 {len(items)} 个项目")  # 调试输出
             
-        #     for item in items:
-        #         try:
-        #             # 获取标题区域
-        #             a_div = item.find('div', class_='a')
-        #             if not a_div:
-        #                 continue
+            for item in items:
+                try:
+                    # 获取标题区域
+                    a_div = item.find('div', class_='a')
+                    if not a_div:
+                        continue
                     
-        #             # 提取链接和标题
-        #             link_elem = a_div.find('a', class_='main')
-        #             if not link_elem:
-        #                 continue
+                    # 提取链接和标题
+                    link_elem = a_div.find('a', class_='main')
+                    if not link_elem:
+                        continue
                     
-        #             title = link_elem.text.strip()
-        #             link = link_elem.get('href')
+                    title = link_elem.text.strip()
+                    link = link_elem.get('href')
                     
-        #             # 提取时间
-        #             i_div = item.find('div', class_='i')
-        #             time_text = ""
-        #             if i_div:
-        #                 time_span = i_div.find('span', class_='time')
-        #                 if time_span:
-        #                     time_text = time_span.text.strip()
+                    # 提取时间
+                    i_div = item.find('div', class_='i')
+                    time_text = ""
+                    if i_div:
+                        time_span = i_div.find('span', class_='time')
+                        if time_span:
+                            time_text = time_span.text.strip()
                     
-        #             if not link.startswith('http'):
-        #                 link = urljoin(self.siteUrl, link)
+                    if not link.startswith('http'):
+                        link = urljoin(self.siteUrl, link)
                     
-        #             # 使用默认图标
-        #             img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
+                    # 使用默认图标
+                    img = "https://duanjugou.top/zb_users/theme/erx_Special/images/logo.png"
                     
-        #             videos.append({
-        #                 "vod_id": link.replace("https://duanjugou.top", ""),
-        #                 "vod_name": title,
-        #                 "vod_pic": img,
-        #                 "vod_remarks": time_text
-        #             })
-        #         except Exception as e:
-        #             print(f"处理单个短剧时出错: {str(e)}")
-        #             continue
+                    videos.append({
+                        "vod_id": link.replace("https://duanjugou.top", ""),
+                        "vod_name": title,
+                        "vod_pic": img,
+                        "vod_remarks": time_text
+                    })
+                except Exception as e:
+                    print(f"处理单个短剧时出错: {str(e)}")
+                    continue
             
-        #     print(f"首页解析完成，共获取到 {len(videos)} 个视频")  # 调试输出
-        #     return {'list': videos}
-        # except Exception as e:
-        #     print(f"获取首页内容时出错: {str(e)}")
-        #     return {'list': []}
+            print(f"首页解析完成，共获取到 {len(videos)} 个视频")  # 调试输出
+            return {'list': videos}
+        except Exception as e:
+            print(f"获取首页内容时出错: {str(e)}")
+            return {'list': []}
     
     def categoryContent(self, tid, pg, filter, extend):
         url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
