@@ -27,8 +27,9 @@ class Spider(Spider):
         return "短剧狗"
     
     def init(self, extend=""):
-        # 分类配置 - 只保留热门标签对应的搜索
+        # 分类配置 - 添加推荐分类和热门标签
         self.cateManual = {
+            "推荐": "home",
             "娇妻": "search.php?q=%E5%A8%87%E5%A6%BB",
             "总裁": "search.php?q=%E6%80%BB%E8%A3%81",
             "都市": "search.php?q=%E9%83%BD%E5%B8%82",
@@ -143,6 +144,7 @@ class Spider(Spider):
         url = self.siteUrl
         
         try:
+            print(f"获取首页内容：{url}")  # 调试输出
             response = self.fetch(url)
             if not response:
                 return {'list': []}
@@ -153,15 +155,18 @@ class Spider(Spider):
             # 根据网站实际结构，找到首页内容区域
             main_list_section = soup.find('div', class_='erx-list-box')
             if not main_list_section:
+                print(f"未找到erx-list-box容器")
                 return {'list': []}
                 
             item_list = main_list_section.find('ul', class_='erx-list')
             if not item_list:
+                print(f"未找到erx-list列表")
                 return {'list': []}
             
             videos = []
             
             items = item_list.find_all('li', class_='item')
+            print(f"首页找到 {len(items)} 个项目")  # 调试输出
             
             for item in items:
                 try:
@@ -186,12 +191,6 @@ class Spider(Spider):
                         if time_span:
                             time_text = time_span.text.strip()
                     
-                    # 提取集数信息
-                    episode_match = re.search(r'（(\d+)集）', title)
-                    episode_count = ''
-                    if episode_match:
-                        episode_count = episode_match.group(1) + '集'
-                    
                     if not link.startswith('http'):
                         link = urljoin(self.siteUrl, link)
                     
@@ -202,12 +201,13 @@ class Spider(Spider):
                         "vod_id": link,
                         "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": episode_count if episode_count else time_text
+                        "vod_remarks": time_text
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
                     continue
             
+            print(f"首页解析完成，共获取到 {len(videos)} 个视频")  # 调试输出
             return {'list': videos}
         except Exception as e:
             print(f"获取首页内容时出错: {str(e)}")
@@ -217,8 +217,15 @@ class Spider(Spider):
         # 构建请求URL
         url = f"{self.siteUrl}"
         
-        if tid == "latest":
-            url = f"{self.siteUrl}/"
+        if tid == "home" or tid == "latest":
+            # 首页内容 - 重用homeVideoContent方法
+            result = self.homeVideoContent()
+            # 添加分页信息
+            result['page'] = pg
+            result['pagecount'] = 1
+            result['limit'] = 20
+            result['total'] = len(result['list'])
+            return result
         elif tid == "hot-day":
             url = f"{self.siteUrl}/sort/hot-day.html"
         elif tid == "hot-week":
