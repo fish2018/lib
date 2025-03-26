@@ -220,14 +220,14 @@ class Spider(Spider):
         
     def shenyi(self, tid, pg):
         # url = f"{self.siteUrl}/search.php?q=神医"
-        # if tid == "sy":
-        #     tid = "神医"
-        # elif tid == "cy":
-        #     tid = "穿越"
-        # elif tid == "sh":
-        #     tid = "闪婚"
-        # elif tid == "zc":
-        #     tid = "总裁"
+        if tid == "sy":
+            tid = "神医"
+        elif tid == "cy":
+            tid = "穿越"
+        elif tid == "sh":
+            tid = "闪婚"
+        elif tid == "zc":
+            tid = "总裁"
         if tid == 'cy':    
             url = f"{self.siteUrl}/search.php?q=穿越"    
         url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
