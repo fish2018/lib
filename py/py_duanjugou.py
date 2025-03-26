@@ -233,7 +233,7 @@ class Spider(Spider):
             tid = "总裁"
             url = f"{self.siteUrl}/search.php?q=总裁"  
 
-        url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
+        # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
@@ -295,7 +295,7 @@ class Spider(Spider):
                         "vod_id": link.replace("https://duanjugou.top", ""),
                         "vod_name": title,
                         "vod_pic": img,
-                        "vod_remarks": time_text
+                        "vod_remarks": f"{tid} {pg} {time_text}"
                     })
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
