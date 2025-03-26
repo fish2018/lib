@@ -219,21 +219,21 @@ class Spider(Spider):
         #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self, tid, pg):
-        url = f"{self.siteUrl}/search.php?q=神医"
+        url = f"{self.siteUrl}/search.php?q=神医&page={pg}"
         if tid == "sy":
             tid = "神医"
-            url = f"{self.siteUrl}/search.php?q=神医"  
+            url = f"{self.siteUrl}/search.php?q=神医&page={pg}"  
         elif tid == "cy":
             tid = "穿越"
-            url = f"{self.siteUrl}/search.php?q=穿越"  
+            url = f"{self.siteUrl}/search.php?q=穿越&page={pg}"  
         elif tid == "sh":
             tid = "闪婚"
-            url = f"{self.siteUrl}/search.php?q=闪婚"  
+            url = f"{self.siteUrl}/search.php?q=闪婚&page={pg}"  
         elif tid == "zc":
             tid = "总裁"
-            url = f"{self.siteUrl}/search.php?q=总裁"  
+            url = f"{self.siteUrl}/search.php?q=总裁&page={pg}"  
 
-        url = f"{self.siteUrl}/search.php?q={quote_plus(tid)}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={quote_plus(tid)}"
+        # url = f"{self.siteUrl}/search.php?q={quote_plus(tid)}&page={pg}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
         
