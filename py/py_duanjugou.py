@@ -29,7 +29,6 @@ class Spider(Spider):
     def init(self, extend=""):
         # 分类配置 - 添加推荐分类和热门标签
         self.cateManual = {
-            "推荐": "home",
             "娇妻": "search.php?q=%E5%A8%87%E5%A6%BB",
             "总裁": "search.php?q=%E6%80%BB%E8%A3%81",
             "都市": "search.php?q=%E9%83%BD%E5%B8%82",
@@ -217,8 +216,20 @@ class Spider(Spider):
         # 构建请求URL
         url = f"{self.siteUrl}"
         
-        if tid == "home" or tid == "latest":
+        # 先进行id判断和处理，确保能处理各种格式的分类ID
+        print(f"接收到分类ID: {tid}")  # 调试输出
+        
+        # 检查是否只传递了分类名称（如"娇妻"），而非完整ID
+        original_tid = tid
+        for k, v in self.cateManual.items():
+            if tid == k:  # 如果传入的是分类名称，转换为对应的ID
+                tid = v
+                print(f"将分类名称 '{original_tid}' 转换为对应ID: {tid}")
+                break
+        
+        if tid == "home" or tid == "latest" or tid == "推荐":
             # 首页内容 - 重用homeVideoContent方法
+            print(f"处理首页分类")
             result = self.homeVideoContent()
             # 添加分页信息
             result['page'] = pg
@@ -240,7 +251,24 @@ class Spider(Spider):
                 url = f"{self.siteUrl}/tags/{tag}.html"
         elif tid.startswith("search.php"):
             # 这是搜索类分类，直接使用完整URL
+            print(f"处理搜索类分类: {tid}")
             url = f"{self.siteUrl}/{tid}"
+        elif tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
+            # 直接处理标签关键词
+            keyword = tid
+            encoded_keyword = quote(keyword)
+            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+            print(f"处理标签关键词: {keyword}, URL: {url}")
+        else:
+            # 最后尝试编码关键词搜索
+            try:
+                # 尝试将分类ID作为关键词进行搜索
+                encoded_keyword = quote(tid)
+                url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+                print(f"尝试将未知分类ID作为关键词搜索: {tid}, URL: {url}")
+            except:
+                print(f"未能处理的分类ID: {tid}")
+                url = self.siteUrl
         
         # 处理分页
         if pg > 1:
@@ -249,15 +277,35 @@ class Spider(Spider):
             else:
                 url = f"{url}?page={pg}"
         
-        print(f"分类请求URL: {url}")  # 调试输出
+        print(f"分类请求最终URL: {url}")  # 调试输出
         
         try:
-            response = self.fetch(url)
+            # 确保使用正确的User-Agent
+            headers = {
+                "User-Agent": self.userAgent,
+                "Referer": self.siteUrl,
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+            }
+            
+            response = self.fetch(url, headers)
             if not response:
+                print(f"请求失败，返回None")
                 return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
             
+            print(f"请求状态码: {response.status_code}")
+            
             html_content = response.text
+            
+            # 打印HTML内容的前100个字符，帮助调试
+            print(f"HTML内容片段: {html_content[:100]}...")
+            
             soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # 查找分类标题，帮助判断是否进入了正确的页面
+            title_tag = soup.find('title')
+            if title_tag:
+                print(f"页面标题: {title_tag.text.strip()}")
             
             # 根据网站实际结构，找到分类内容区域
             main_list_section = soup.find('div', class_='erx-list-box')
@@ -314,6 +362,8 @@ class Spider(Spider):
                     print(f"处理单个短剧时出错: {str(e)}")
                     continue
             
+            print(f"成功解析 {len(videos)} 个视频")  # 调试输出
+            
             # 获取分页信息
             try:
                 pager = soup.find('div', class_='pagebar')
@@ -322,22 +372,30 @@ class Spider(Spider):
                     max_page_match = re.search(r'共(\d+)页', page_text)
                     if max_page_match:
                         max_page = int(max_page_match.group(1))
+                        print(f"检测到总页数: {max_page}")
                     else:
                         max_page = pg
                 else:
                     max_page = pg
-            except:
+            except Exception as e:
+                print(f"获取分页信息出错: {str(e)}")
                 max_page = pg
             
-            return {
+            result = {
                 'list': videos,
                 'page': pg,
                 'pagecount': max_page,
                 'limit': 20,
                 'total': len(videos) * max_page
             }
+            
+            print(f"分类内容获取完成，返回 {len(videos)} 个视频，共 {max_page} 页")
+            
+            return result
         except Exception as e:
             print(f"获取分类内容时出错: {str(e)}")
+            import traceback
+            print(traceback.format_exc())  # 打印完整错误堆栈
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
     
     def detailContent(self, ids):
