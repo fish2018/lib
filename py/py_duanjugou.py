@@ -22,11 +22,17 @@ class Spider(Spider):
     def __init__(self):
         self.siteUrl = 'https://duanjugou.top'
         self.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+        # self.cateManual = {
+        #     "总裁": "zc",
+        #     "穿越": "cy",
+        #     "闪婚": "sh",
+        #     "神医": "sy"
+        # }
         self.cateManual = {
-            "总裁": "zc",
-            "穿越": "cy",
-            "闪婚": "sh",
-            "神医": "sy"
+            "总裁": "总裁",
+            "穿越": "穿越",
+            "闪婚": "闪婚",
+            "神医": "神医"
         }
     
     def getName(self):
@@ -219,19 +225,19 @@ class Spider(Spider):
         #     return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
         
     def shenyi(self, tid, pg):
-        url = f"{self.siteUrl}/search.php?q=神医&page={pg}"
-        if tid == "sy":
-            tid = "神医"
-            url = f"{self.siteUrl}/search.php?q=神医&page={pg}"  
-        elif tid == "cy":
-            tid = "穿越"
-            url = f"{self.siteUrl}/search.php?q=穿越&page={pg}"  
-        elif tid == "sh":
-            tid = "闪婚"
-            url = f"{self.siteUrl}/search.php?q=闪婚&page={pg}"  
-        elif tid == "zc":
-            tid = "总裁"
-            url = f"{self.siteUrl}/search.php?q=总裁&page={pg}"  
+        # url = f"{self.siteUrl}/search.php?q=神医&page={pg}"
+        # if tid == "sy":
+        #     tid = "神医"
+        #     url = f"{self.siteUrl}/search.php?q=神医&page={pg}"  
+        # elif tid == "cy":
+        #     tid = "穿越"
+        #     url = f"{self.siteUrl}/search.php?q=穿越&page={pg}"  
+        # elif tid == "sh":
+        #     tid = "闪婚"
+        #     url = f"{self.siteUrl}/search.php?q=闪婚&page={pg}"  
+        # elif tid == "zc":
+        #     tid = "总裁"
+        #     url = f"{self.siteUrl}/search.php?q=总裁&page={pg}"  
 
         url = f"{self.siteUrl}/search.php?q={tid}&page={pg}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
