@@ -214,7 +214,7 @@ class Spider(Spider):
     
     def categoryContent(self, tid, pg, filter, extend):
         # 构建请求URL
-        url = f"{self.siteUrl}"
+        url = self.siteUrl
         
         # 先进行id判断和处理，确保能处理各种格式的分类ID
         print(f"接收到分类ID: {tid}")  # 调试输出
@@ -227,7 +227,13 @@ class Spider(Spider):
                 print(f"将分类名称 '{original_tid}' 转换为对应ID: {tid}")
                 break
         
-        if tid == "home" or tid == "latest" or tid == "推荐":
+        if tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
+            # 直接处理标签关键词
+            keyword = tid
+            encoded_keyword = quote(keyword)
+            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
+            print(f"处理标签关键词: {keyword}, URL: {url}")
+        else:
             # 首页内容 - 重用homeVideoContent方法
             print(f"处理首页分类")
             result = self.homeVideoContent()
@@ -237,61 +243,6 @@ class Spider(Spider):
             result['limit'] = 20
             result['total'] = len(result['list'])
             return result
-        elif tid == "hot-day":
-            url = f"{self.siteUrl}/sort/hot-day.html"
-        elif tid == "hot-week":
-            url = f"{self.siteUrl}/sort/hot-week.html"
-        elif tid.startswith("tag-"):
-            # 对于标签类别，需要检查是否有特定标签
-            url = f"{self.siteUrl}/tags.html"
-            
-            # 处理过滤器
-            if "tag" in extend and extend["tag"]:
-                tag = extend["tag"]
-                url = f"{self.siteUrl}/tags/{tag}.html"
-        elif tid.startswith("search.php"):
-            # 这是搜索类分类，直接使用完整URL
-            print(f"处理搜索类分类: {tid}")
-            url = f"{self.siteUrl}/{tid}"
-        elif tid in ["娇妻", "总裁", "都市", "穿越", "闪婚", "神医"]:
-            # 直接处理标签关键词
-            keyword = tid
-            encoded_keyword = quote(keyword)
-            url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
-            print(f"处理标签关键词: {keyword}, URL: {url}")
-        elif tid.startswith("%"):
-            # 处理直接传入URL编码部分的情况
-            # 先尝试解码，看是否是中文关键词
-            try:
-                # 这里不能直接解码，因为应用可能传入的是已编码的字符串如%E7%A9%BF%E8%B6%8A
-                # 我们需要特殊处理，通过查找原始映射来匹配
-                found = False
-                for k, v in self.cateManual.items():
-                    if v.endswith(tid):
-                        print(f"找到匹配的分类: {k}")
-                        url = f"{self.siteUrl}/{v}"
-                        found = True
-                        break
-                
-                if not found:
-                    # 如果没找到匹配，则作为中文关键词处理
-                    # 注意：这可能是一个错误的编码字符串，我们直接用于搜索
-                    url = f"{self.siteUrl}/search.php?q={tid}"
-                    print(f"未找到匹配，直接使用编码串作为关键词: {tid}")
-            except Exception as e:
-                print(f"处理URL编码部分时出错: {str(e)}")
-                # 作为通用关键词处理
-                url = f"{self.siteUrl}/search.php?q={tid}"
-        else:
-            # 最后尝试编码关键词搜索
-            try:
-                # 尝试将分类ID作为关键词进行搜索
-                encoded_keyword = quote(tid)
-                url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
-                print(f"尝试将未知分类ID作为关键词搜索: {tid}, URL: {url}")
-            except:
-                print(f"未能处理的分类ID: {tid}")
-                url = self.siteUrl
         
         # 处理分页
         if pg > 1:
@@ -316,35 +267,24 @@ class Spider(Spider):
                 print(f"请求失败，返回None")
                 return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
             
-            print(f"请求状态码: {response.status_code}")
-            
             html_content = response.text
-            
-            # 打印HTML内容的前100个字符，帮助调试
-            print(f"HTML内容片段: {html_content[:100]}...")
-            
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            # 查找分类标题，帮助判断是否进入了正确的页面
-            title_tag = soup.find('title')
-            if title_tag:
-                print(f"页面标题: {title_tag.text.strip()}")
-            
-            # 根据网站实际结构，找到分类内容区域
+            # 根据网站实际结构，找到首页内容区域
             main_list_section = soup.find('div', class_='erx-list-box')
             if not main_list_section:
                 print(f"未找到erx-list-box容器")
-                return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+                return {'list': []}
                 
             item_list = main_list_section.find('ul', class_='erx-list')
             if not item_list:
                 print(f"未找到erx-list列表")
-                return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 20, 'total': 0}
+                return {'list': []}
             
             videos = []
             
             items = item_list.find_all('li', class_='item')
-            print(f"找到 {len(items)} 个项目")  # 调试输出
+            print(f"首页找到 {len(items)} 个项目")  # 调试输出
             
             for item in items:
                 try:
@@ -384,8 +324,8 @@ class Spider(Spider):
                 except Exception as e:
                     print(f"处理单个短剧时出错: {str(e)}")
                     continue
+
             
-            print(f"成功解析 {len(videos)} 个视频")  # 调试输出
             
             # 获取分页信息
             try:
@@ -404,16 +344,6 @@ class Spider(Spider):
                 print(f"获取分页信息出错: {str(e)}")
                 max_page = pg
             
-            # 确保视频列表非空
-            if not videos:
-                print("警告：视频列表为空，尝试返回空结果的标准格式")
-                return {
-                    'list': [],
-                    'page': pg,
-                    'pagecount': max_page,
-                    'limit': 20,
-                    'total': 0
-                }
             
             # 返回标准格式
             result = {
