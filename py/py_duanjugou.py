@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # 短剧狗爬虫 - 全网免费短剧网盘合集
 
