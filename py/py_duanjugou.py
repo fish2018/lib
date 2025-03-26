@@ -531,8 +531,7 @@ class Spider(Spider):
                 "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
             }
             
-            # response = self.fetch(url, headers)
-            response = requests.get(url, headers=headers)
+            response = self.fetch(url)
             if not response:
                 print(f"搜索请求失败，URL: {url}")
                 return {'list': []}
