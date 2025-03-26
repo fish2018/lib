@@ -25,7 +25,7 @@ class Spider(Spider):
         self.cateManual = {
             "总裁": "zc",
             "穿越": "cy",
-            "闪婚": "sb",
+            "闪婚": "sh",
             "神医": "sy"
         }
     
@@ -224,11 +224,12 @@ class Spider(Spider):
         #     tid = "神医"
         # elif tid == "cy":
         #     tid = "穿越"
-        # elif tid == "sb":
+        # elif tid == "sh":
         #     tid = "闪婚"
         # elif tid == "zc":
-        #     tid = "总裁"    
-            
+        #     tid = "总裁"
+        if tid == 'cy':    
+            url = f"{self.siteUrl}/search.php?q=神医"    
         # url = f"{self.siteUrl}/search.php?q={tid}&page={pg}" if pg > 1 else f"{self.siteUrl}/search.php?q={tid}"
         # url = f"{self.siteUrl}/search.php?q={tid}"
         # print(f"处理标签关键词: 神医, URL: {url}")
