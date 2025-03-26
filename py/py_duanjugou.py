@@ -587,30 +587,59 @@ class Spider(Spider):
             return {}
     
     def searchContent(self, key, quick, pg=1):
-        url = f"{self.siteUrl}/search.php?q={key}"
+        # 对搜索关键词进行URL编码
+        try:
+            encoded_key = quote(key)
+            url = f"{self.siteUrl}/search.php?q={encoded_key}"
+            print(f"搜索关键词: {key}, 编码后: {encoded_key}")
+            print(f"搜索URL: {url}")
+        except Exception as e:
+            print(f"编码搜索关键词时出错: {str(e)}")
+            return {'list': []}
+        
+        # 处理分页
         if pg > 1:
             url = f"{url}&page={pg}"
-            
+        
         try:
-            response = self.fetch(url)
+            # 确保使用正确的请求头
+            headers = {
+                "User-Agent": self.userAgent,
+                "Referer": self.siteUrl,
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+            }
+            
+            response = self.fetch(url, headers)
             if not response:
+                print(f"搜索请求失败，URL: {url}")
                 return {'list': []}
-                
+            
+            print(f"搜索请求状态码: {response.status_code}")
+            
             html_content = response.text
+            
+            # 打印HTML内容的前100个字符，帮助调试
+            print(f"搜索HTML内容片段: {html_content[:100]}...")
+            
             soup = BeautifulSoup(html_content, 'html.parser')
             
             # 查找搜索结果列表
             main_list_section = soup.find('div', class_='erx-list-box')
             if not main_list_section:
+                print(f"未找到搜索结果erx-list-box容器")
                 return {'list': []}
                 
             item_list = main_list_section.find('ul', class_='erx-list')
             if not item_list:
+                print(f"未找到搜索结果erx-list列表")
                 return {'list': []}
             
             videos = []
             
             items = item_list.find_all('li', class_='item')
+            print(f"搜索结果找到 {len(items)} 个项目")
+            
             for item in items:
                 try:
                     # 获取标题区域
@@ -650,9 +679,12 @@ class Spider(Spider):
                     print(f"处理搜索结果时出错: {str(e)}")
                     continue
             
+            print(f"搜索成功解析 {len(videos)} 个视频结果")
             return {'list': videos}
         except Exception as e:
             print(f"搜索内容时出错: {str(e)}")
+            import traceback
+            print(traceback.format_exc())  # 打印完整错误堆栈
             return {'list': []}
     
     def searchContentPage(self, key, quick, pg=1):
