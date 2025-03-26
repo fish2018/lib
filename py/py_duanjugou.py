@@ -259,6 +259,29 @@ class Spider(Spider):
             encoded_keyword = quote(keyword)
             url = f"{self.siteUrl}/search.php?q={encoded_keyword}"
             print(f"处理标签关键词: {keyword}, URL: {url}")
+        elif tid.startswith("%"):
+            # 处理直接传入URL编码部分的情况
+            # 先尝试解码，看是否是中文关键词
+            try:
+                # 这里不能直接解码，因为应用可能传入的是已编码的字符串如%E7%A9%BF%E8%B6%8A
+                # 我们需要特殊处理，通过查找原始映射来匹配
+                found = False
+                for k, v in self.cateManual.items():
+                    if v.endswith(tid):
+                        print(f"找到匹配的分类: {k}")
+                        url = f"{self.siteUrl}/{v}"
+                        found = True
+                        break
+                
+                if not found:
+                    # 如果没找到匹配，则作为中文关键词处理
+                    # 注意：这可能是一个错误的编码字符串，我们直接用于搜索
+                    url = f"{self.siteUrl}/search.php?q={tid}"
+                    print(f"未找到匹配，直接使用编码串作为关键词: {tid}")
+            except Exception as e:
+                print(f"处理URL编码部分时出错: {str(e)}")
+                # 作为通用关键词处理
+                url = f"{self.siteUrl}/search.php?q={tid}"
         else:
             # 最后尝试编码关键词搜索
             try:
