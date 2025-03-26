@@ -22,70 +22,17 @@ class Spider(Spider):
     def __init__(self):
         self.siteUrl = 'https://duanjugou.top'
         self.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+        self.cateManual = {
+            "总裁": "总裁",
+            "穿越": "穿越",
+            "闪婚": "闪婚",
+            "神医": "神医"
+        }
     
     def getName(self):
         return "短剧狗"
     
     def init(self, extend=""):
-        # 分类配置 - 添加推荐分类和热门标签
-        self.cateManual = {
-            "娇妻": "娇妻",
-            "总裁": "总裁",
-            "都市": "都市",
-            "穿越": "穿越",
-            "闪婚": "闪婚",
-            "神医": "神医"
-        }
-        
-        # Pyramid应用必要配置项
-        self.api = ""  # API地址，本地运行时不需要
-        self.key = "py_短剧狗"  # 插件唯一标识
-        self.name = "短剧狗|网盘"  # 插件名称
-        self.type = 3  # 插件类型 - 3为视频
-        self.searchable = 1  # 是否可搜索
-        self.quickSearch = 1  # 是否可快速搜索
-        self.filterable = 1  # 是否可筛选
-        self.changeable = 0  # 是否可换源
-        
-        # 过滤器配置
-        if extend:
-            self.extend = extend
-        else:
-            self.extend = {
-                # 女性标签过滤器
-                "tag-female": [
-                    {
-                        "key": "tag", 
-                        "name": "标签",
-                        "value": [
-                            {"n": "全部", "v": ""},
-                            {"n": "娇妻", "v": "娇妻"},
-                            {"n": "阿姨", "v": "阿姨"},
-                            {"n": "夫人", "v": "夫人"},
-                            {"n": "女友", "v": "女友"},
-                            {"n": "老婆", "v": "老婆"},
-                            {"n": "千金", "v": "千金"},
-                            {"n": "公主", "v": "公主"},
-                            {"n": "女王", "v": "女王"}
-                        ]
-                    }
-                ],
-                # 男性标签过滤器
-                "tag-male": [
-                    {
-                        "key": "tag", 
-                        "name": "标签",
-                        "value": [
-                            {"n": "全部", "v": ""},
-                            {"n": "少爷", "v": "少爷"},
-                            {"n": "王爷", "v": "王爷"},
-                            {"n": "男友", "v": "男友"},
-                            {"n": "老公", "v": "老公"},
-                            {"n": "赘婿", "v": "赘婿"}
-                        ]
-                    }
-                ]
-            }
         return
     
     def fetch(self, url, headers=None):
@@ -126,10 +73,6 @@ class Spider(Spider):
             })
         
         result['class'] = classes
-        
-        # 处理过滤器
-        if filter:
-            result['filters'] = self.extend
         
         # 获取首页推荐视频
         try:
