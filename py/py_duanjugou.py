@@ -115,7 +115,8 @@ class Spider(Spider):
         
         # 获取首页推荐视频
         try:
-            result['list'] = self.homeVideoContent()['list']
+            # result['list'] = self.homeVideoContent()['list']
+            result['list'] = self.shenyi()['list']
         except:
             result['list'] = []
         
