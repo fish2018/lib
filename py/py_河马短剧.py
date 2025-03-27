@@ -79,103 +79,109 @@ class Spider():
     
     def homeVideoContent(self):
         """获取首页推荐视频内容"""
-        url = self.siteUrl
-        videos = []
-        try:
-            response = self.fetch(url)
-            html_content = response.text
+        # url = self.siteUrl
+        # videos = []
+        # try:
+        #     response = self.fetch(url)
+        #     html_content = response.text
             
-            # 提取NEXT_DATA JSON数据
-            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+        #     # 提取NEXT_DATA JSON数据
+        #     next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+        #     next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
             
-            if next_data_match:
-                next_data_json = json.loads(next_data_match.group(1))
-                page_props = next_data_json.get("props", {}).get("pageProps", {})
+        #     if next_data_match:
+        #         next_data_json = json.loads(next_data_match.group(1))
+        #         page_props = next_data_json.get("props", {}).get("pageProps", {})
                 
-                # 获取轮播图数据 - 这些通常是推荐内容
-                if "bannerList" in page_props and isinstance(page_props["bannerList"], list):
-                    banner_list = page_props["bannerList"]
-                    for banner in banner_list:
-                        book_id = banner.get("bookId", "")
-                        book_name = banner.get("bookName", "")
-                        cover_url = banner.get("coverWap", banner.get("wapUrl", ""))
+        #         # 获取轮播图数据 - 这些通常是推荐内容
+        #         if "bannerList" in page_props and isinstance(page_props["bannerList"], list):
+        #             banner_list = page_props["bannerList"]
+        #             for banner in banner_list:
+        #                 book_id = banner.get("bookId", "")
+        #                 book_name = banner.get("bookName", "")
+        #                 cover_url = banner.get("coverWap", banner.get("wapUrl", ""))
                         
-                        # 获取状态和章节数
-                        status = banner.get("statusDesc", "")
-                        total_chapters = banner.get("totalChapterNum", "")
+        #                 # 获取状态和章节数
+        #                 status = banner.get("statusDesc", "")
+        #                 total_chapters = banner.get("totalChapterNum", "")
                         
-                        if book_id and book_name:
-                            videos.append({
-                                "vod_id": f"/drama/{book_id}",
-                                "vod_name": book_name,
-                                "vod_pic": cover_url,
-                                "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
-                            })
+        #                 if book_id and book_name:
+        #                     videos.append({
+        #                         "vod_id": f"/drama/{book_id}",
+        #                         "vod_name": book_name,
+        #                         "vod_pic": cover_url,
+        #                         "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
+        #                     })
                 
-                # SEO分类下的推荐
-                if "seoColumnVos" in page_props and isinstance(page_props["seoColumnVos"], list):
-                    for column in page_props["seoColumnVos"]:
-                        book_infos = column.get("bookInfos", [])
-                        for book in book_infos:
-                            book_id = book.get("bookId", "")
-                            book_name = book.get("bookName", "")
-                            cover_url = book.get("coverWap", "")
-                            status = book.get("statusDesc", "")
-                            total_chapters = book.get("totalChapterNum", "")
+        #         # SEO分类下的推荐
+        #         if "seoColumnVos" in page_props and isinstance(page_props["seoColumnVos"], list):
+        #             for column in page_props["seoColumnVos"]:
+        #                 book_infos = column.get("bookInfos", [])
+        #                 for book in book_infos:
+        #                     book_id = book.get("bookId", "")
+        #                     book_name = book.get("bookName", "")
+        #                     cover_url = book.get("coverWap", "")
+        #                     status = book.get("statusDesc", "")
+        #                     total_chapters = book.get("totalChapterNum", "")
                             
-                            if book_id and book_name:
-                                videos.append({
-                                    "vod_id": f"/drama/{book_id}",
-                                    "vod_name": book_name,
-                                    "vod_pic": cover_url,
-                                    "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
-                                })
+        #                     if book_id and book_name:
+        #                         videos.append({
+        #                             "vod_id": f"/drama/{book_id}",
+        #                             "vod_name": book_name,
+        #                             "vod_pic": cover_url,
+        #                             "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
+        #                         })
             
-            # 如果没有提取到视频，尝试从HTML解析
-            if not videos:
-                soup = BeautifulSoup(html_content, 'html.parser')
+        #     # 如果没有提取到视频，尝试从HTML解析
+        #     if not videos:
+        #         soup = BeautifulSoup(html_content, 'html.parser')
                 
-                # 查找所有带有bookId属性的元素
-                book_elements = soup.select('[data-bookid], [data-book-id], [bookid]')
-                for elem in book_elements:
-                    book_id = elem.get('data-bookid') or elem.get('data-book-id') or elem.get('bookid')
+        #         # 查找所有带有bookId属性的元素
+        #         book_elements = soup.select('[data-bookid], [data-book-id], [bookid]')
+        #         for elem in book_elements:
+        #             book_id = elem.get('data-bookid') or elem.get('data-book-id') or elem.get('bookid')
                     
-                    # 查找标题和图片
-                    title_elem = elem.select_one('.title, h3, h2, .book-name, .name')
-                    title = title_elem.text.strip() if title_elem else "未知标题"
+        #             # 查找标题和图片
+        #             title_elem = elem.select_one('.title, h3, h2, .book-name, .name')
+        #             title = title_elem.text.strip() if title_elem else "未知标题"
                     
-                    img_elem = elem.select_one('img')
-                    img_url = img_elem.get('src', '') if img_elem else ""
+        #             img_elem = elem.select_one('img')
+        #             img_url = img_elem.get('src', '') if img_elem else ""
                     
-                    # 备注信息
-                    remark_elem = elem.select_one('.remark, .status, .episode')
-                    remark = remark_elem.text.strip() if remark_elem else ""
+        #             # 备注信息
+        #             remark_elem = elem.select_one('.remark, .status, .episode')
+        #             remark = remark_elem.text.strip() if remark_elem else ""
                     
-                    if book_id and title:
-                        videos.append({
-                            "vod_id": f"/drama/{book_id}",
-                            "vod_name": title,
-                            "vod_pic": img_url,
-                            "vod_remarks": remark
-                        })
+        #             if book_id and title:
+        #                 videos.append({
+        #                     "vod_id": f"/drama/{book_id}",
+        #                     "vod_name": title,
+        #                     "vod_pic": img_url,
+        #                     "vod_remarks": remark
+        #                 })
             
-            # 去重
-            seen = set()
-            unique_videos = []
-            for video in videos:
-                if video["vod_id"] not in seen:
-                    seen.add(video["vod_id"])
-                    unique_videos.append(video)
+        #     # 去重
+        #     seen = set()
+        #     unique_videos = []
+        #     for video in videos:
+        #         if video["vod_id"] not in seen:
+        #             seen.add(video["vod_id"])
+        #             unique_videos.append(video)
             
-            videos = unique_videos
+        #     videos = unique_videos
         
-        except Exception as e:
-            print(f"获取首页推荐内容出错: {e}")
+        # except Exception as e:
+        #     print(f"获取首页推荐内容出错: {e}")
         
+        # result = {
+        #     "list": videos
+        # }
         result = {
-            "list": videos
-        }
+            'list': [
+                {'vod_id': '/drama/41000100525', 'vod_name': '金马玉堂', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869291106.png', 'vod_remarks': '金马玉堂'}, 
+                {'vod_id': '/drama/41000101091', 'vod_name': '悬我济世', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869352225.png', 'vod_remarks': '悬我济世'}
+            ]
+        } 
         return result
     
     def categoryContent(self, tid, pg, filter, extend):
