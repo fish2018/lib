@@ -11,33 +11,51 @@ class Spider():
         self.site = "河马剧场"
         self.domain = "kuaikaw.cn"
         self.api = "https://www.kuaikaw.cn"
-        self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36"
+        self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
         self.nextData = None  # 缓存NEXT_DATA数据
+        self.cateManual = {}
 
+    def getName(self):
+        # 返回爬虫名称
+        return "河马短剧"
+    
     def init(self, extend=""):
+        # 初始化爬虫
+        headers = {
+            "User-Agent": self.ua,
+            "Referer": f"{self.api}/"
+        }
+        
+        # 初始化分类列表 (根据网站最新分类数据)
+        self.cateManual = {
+            "首页": "home",
+            "短剧推荐": "1",
+            "最新短剧": "3",
+            "短剧精选": "4",
+            "青春": "青春",
+            "民国": "民国",
+            "萌宝": "萌宝",
+            "超能": "超能",
+            "甜宠": "甜宠",
+            "学院": "学院",
+            "都市": "都市",
+            "穿越": "穿越",
+            "古装": "古装",
+            "悬疑": "悬疑",
+            "创业": "创业"
+        }
+        
         return {}
     
     def homeContent(self, filter=False):
         """获取首页分类及筛选"""
         result = {}
-        # 分类列表，根据网站实际情况构建
-        cateManual = {
-            "首页": "home",
-            "正在热播": "hot",
-            "全部分类": "all",
-            "情感": "838",
-            "都市": "1129",
-            "古装": "1128",
-            "逆袭": "464",
-            "家庭": "1126",
-            "青春": "1136",
-            "校园": "1090"
-        }
+        # 分类列表，使用已初始化的cateManual
         classes = []
-        for k in cateManual:
+        for k in self.cateManual:
             classes.append({
                 'type_name': k,
-                'type_id': cateManual[k]
+                'type_id': self.cateManual[k]
             })
         result['class'] = classes
         
@@ -69,7 +87,7 @@ class Spider():
                 }
             ]
             # 其他分类页也使用相同的筛选
-            for cate_id in cateManual.values():
+            for cate_id in self.cateManual.values():
                 if cate_id not in ["home", "hot", "all"]:
                     filters[cate_id] = filters["all"]
             
@@ -90,69 +108,80 @@ class Spider():
             response = requests.get(url, headers=headers)
             html_content = response.text
             
-            # 使用BeautifulSoup直接解析HTML提取视频信息
-            soup = BeautifulSoup(html_content, 'html.parser')
+            # 提取NEXT_DATA JSON数据
+            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
             
-            # 查找所有可能的视频项
-            # 注意：根据实际HTML结构调整选择器
-            video_items = soup.select('a[href*="/episode/"]')
+            if next_data_match:
+                next_data_json = json.loads(next_data_match.group(1))
+                page_props = next_data_json.get("props", {}).get("pageProps", {})
+                
+                # 获取轮播图数据 - 这些通常是推荐内容
+                if "bannerList" in page_props and isinstance(page_props["bannerList"], list):
+                    banner_list = page_props["bannerList"]
+                    for banner in banner_list:
+                        book_id = banner.get("bookId", "")
+                        book_name = banner.get("bookName", "")
+                        cover_url = banner.get("coverWap", banner.get("wapUrl", ""))
+                        
+                        # 获取状态和章节数
+                        status = banner.get("statusDesc", "")
+                        total_chapters = banner.get("totalChapterNum", "")
+                        
+                        if book_id and book_name:
+                            videos.append({
+                                "vod_id": book_id,
+                                "vod_name": book_name,
+                                "vod_pic": cover_url,
+                                "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
+                            })
+                
+                # SEO分类下的推荐
+                if "seoColumnVos" in page_props and isinstance(page_props["seoColumnVos"], list):
+                    for column in page_props["seoColumnVos"]:
+                        book_infos = column.get("bookInfos", [])
+                        for book in book_infos:
+                            book_id = book.get("bookId", "")
+                            book_name = book.get("bookName", "")
+                            cover_url = book.get("coverWap", "")
+                            status = book.get("statusDesc", "")
+                            total_chapters = book.get("totalChapterNum", "")
+                            
+                            if book_id and book_name:
+                                videos.append({
+                                    "vod_id": book_id,
+                                    "vod_name": book_name,
+                                    "vod_pic": cover_url,
+                                    "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
+                                })
             
-            for item in video_items:
-                # 提取链接获取ID
-                href = item.get('href', '')
-                match = re.search(r'/episode/(\d+)', href)
-                if not match:
-                    continue
-                
-                book_id = match.group(1)
-                
-                # 查找标题
-                title_elem = item.select_one('.title, h3, h2, strong, span, div')
-                title = title_elem.text.strip() if title_elem else "未知标题"
-                
-                # 查找图片
-                img_elem = item.select_one('img')
-                img_url = img_elem.get('src', '') if img_elem else ""
-                
-                # 查找备注信息（集数、状态等）
-                remark_elem = item.select_one('.remark, .status, .episode, span')
-                remark = remark_elem.text.strip() if remark_elem else ""
-                
-                if book_id and title:
-                    videos.append({
-                        "vod_id": book_id,
-                        "vod_name": title,
-                        "vod_pic": img_url,
-                        "vod_remarks": remark
-                    })
-            
-            # 如果未提取到视频，尝试从NEXT_DATA中获取
+            # 如果没有提取到视频，尝试从HTML解析
             if not videos:
-                # 提取NEXT_DATA JSON数据
-                next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-                next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+                soup = BeautifulSoup(html_content, 'html.parser')
                 
-                if next_data_match:
-                    next_data_json = json.loads(next_data_match.group(1))
-                    page_props = next_data_json.get("props", {}).get("pageProps", {})
+                # 查找所有带有bookId属性的元素
+                book_elements = soup.select('[data-bookid], [data-book-id], [bookid]')
+                for elem in book_elements:
+                    book_id = elem.get('data-bookid') or elem.get('data-book-id') or elem.get('bookid')
                     
-                    # 尝试从各种可能的字段获取视频列表
-                    for field in ["hotBooks", "newBooks", "recommendBooks", "bookList"]:
-                        if field in page_props and isinstance(page_props[field], list):
-                            for book in page_props[field]:
-                                book_id = book.get("bookId", "")
-                                book_name = book.get("bookName", "")
-                                cover_url = book.get("coverWap", "")
-                                status = book.get("statusDesc", "")
-                                total_chapters = book.get("totalChapterNum", "")
-                                
-                                if book_id and book_name:
-                                    videos.append({
-                                        "vod_id": book_id,
-                                        "vod_name": book_name,
-                                        "vod_pic": cover_url,
-                                        "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
-                                    })
+                    # 查找标题和图片
+                    title_elem = elem.select_one('.title, h3, h2, .book-name, .name')
+                    title = title_elem.text.strip() if title_elem else "未知标题"
+                    
+                    img_elem = elem.select_one('img')
+                    img_url = img_elem.get('src', '') if img_elem else ""
+                    
+                    # 备注信息
+                    remark_elem = elem.select_one('.remark, .status, .episode')
+                    remark = remark_elem.text.strip() if remark_elem else ""
+                    
+                    if book_id and title:
+                        videos.append({
+                            "vod_id": book_id,
+                            "vod_name": title,
+                            "vod_pic": img_url,
+                            "vod_remarks": remark
+                        })
             
             # 去重
             seen = set()
@@ -177,29 +206,22 @@ class Spider():
         result = {}
         videos = []
         
-        # 不同分类有不同的请求URL和处理方式
         if tid == "home":
             # 首页内容直接返回homeVideoContent的结果
             return self.homeVideoContent()
         
-        elif tid == "hot":
-            # 热播内容
-            url = f"{self.api}/hot"
+        # 网站分类路径已变更，使用搜索接口进行替代
+        # 根据分类ID构建搜索查询
+        search_key = tid
         
-        elif tid == "all":
-            # 全部分类，按筛选处理
-            url = f"{self.api}/list"
+        # 使用分类名称作为搜索关键词
+        for name, id_ in self.cateManual.items():
+            if id_ == tid:
+                search_key = name
+                break
         
-        else:
-            # 特定分类ID
-            url = f"{self.api}/class/{tid}"
-        
-        # 添加筛选参数
-        params = {"page": pg}
-        if extend:
-            for key, value in extend.items():
-                if key and value:
-                    params[key] = value
+        # 使用搜索接口获取分类内容
+        url = f"{self.api}/search?searchValue={urllib.parse.quote(search_key)}&page={pg}"
         
         headers = {
             "User-Agent": self.ua,
@@ -207,118 +229,95 @@ class Spider():
         }
         
         try:
-            # 构建完整的请求URL
-            if params:
-                url_params = urllib.parse.urlencode(params)
-                full_url = f"{url}?{url_params}"
-            else:
-                full_url = url
-            
-            response = requests.get(full_url, headers=headers)
+            response = requests.get(url, headers=headers)
             html_content = response.text
             
-            # 使用BeautifulSoup直接解析HTML
-            soup = BeautifulSoup(html_content, 'html.parser')
+            # 提取NEXT_DATA JSON数据
+            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
             
-            # 查找所有视频项
-            video_items = soup.select('a[href*="/episode/"]')
-            
-            for item in video_items:
-                # 提取链接获取ID
-                href = item.get('href', '')
-                match = re.search(r'/episode/(\d+)', href)
-                if not match:
-                    continue
-                
-                book_id = match.group(1)
-                
-                # 查找标题
-                title_elem = item.select_one('.title, h3, h2, strong, span, div')
-                title = title_elem.text.strip() if title_elem else "未知标题"
-                
-                # 查找图片
-                img_elem = item.select_one('img')
-                img_url = img_elem.get('src', '') if img_elem else ""
-                
-                # 查找备注信息（集数、状态等）
-                remark_elem = item.select_one('.remark, .status, .episode, span')
-                remark = remark_elem.text.strip() if remark_elem else ""
-                
-                if book_id and title:
-                    videos.append({
-                        "vod_id": book_id,
-                        "vod_name": title,
-                        "vod_pic": img_url,
-                        "vod_remarks": remark
-                    })
-            
-            # 如果未提取到视频，尝试从NEXT_DATA中获取
-            if not videos:
-                # 提取NEXT_DATA JSON数据
-                next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-                next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
-                
-                if next_data_match:
-                    next_data_json = json.loads(next_data_match.group(1))
-                    page_props = next_data_json.get("props", {}).get("pageProps", {})
-                    
-                    # 获取剧集列表
-                    book_list = page_props.get("bookList", [])
-                    
-                    # 获取总页数
-                    total_pages = page_props.get("pages", 1)
-                    
-                    # 转换为统一的视频项格式
-                    for book in book_list:
-                        book_id = book.get("bookId", "")
-                        book_name = book.get("bookName", "")
-                        cover_url = book.get("coverWap", "")
-                        total_chapters = book.get("totalChapterNum", "")
-                        status_desc = book.get("statusDesc", "")
-                        
-                        if book_id:
-                            videos.append({
-                                "vod_id": book_id,
-                                "vod_name": book_name,
-                                "vod_pic": cover_url,
-                                "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
-                            })
-            
-            # 去重
-            seen = set()
-            unique_videos = []
-            for video in videos:
-                if video["vod_id"] not in seen:
-                    seen.add(video["vod_id"])
-                    unique_videos.append(video)
-            
-            videos = unique_videos
-            
-            # 尝试提取分页信息
-            pagination = soup.select_one('.pagination')
-            total_pages = 1
-            if pagination:
-                page_links = pagination.select('a')
-                if page_links:
-                    last_page = page_links[-1].text.strip()
-                    if last_page.isdigit():
-                        total_pages = int(last_page)
-            
-            # 如果没有找到分页信息，但在NEXT_DATA中有pages字段
-            if total_pages == 1 and next_data_match:
+            if next_data_match:
                 next_data_json = json.loads(next_data_match.group(1))
                 page_props = next_data_json.get("props", {}).get("pageProps", {})
-                if page_props and "pages" in page_props:
-                    total_pages = page_props.get("pages", 1)
-            
-            # 构建返回结果
-            result = {
-                "list": videos,
-                "page": int(pg),
-                "pagecount": total_pages,
-                "limit": len(videos),
-                "total": total_pages * len(videos) if videos else 0
-            }
+                
+                # 获取总页数和当前页
+                current_page = page_props.get("page", 1)
+                total_pages = page_props.get("pages", 1)
+                
+                # 获取书籍列表
+                book_list = page_props.get("bookList", [])
+                
+                # 转换为通用格式
+                for book in book_list:
+                    book_id = book.get("bookId", "")
+                    book_name = book.get("bookName", "")
+                    cover_url = book.get("coverWap", "")
+                    status_desc = book.get("statusDesc", "")
+                    total_chapters = book.get("totalChapterNum", "")
+                    
+                    if book_id and book_name:
+                        videos.append({
+                            "vod_id": book_id,
+                            "vod_name": book_name,
+                            "vod_pic": cover_url,
+                            "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
+                        })
+                
+                # 构建返回结果
+                result = {
+                    "list": videos,
+                    "page": int(current_page),
+                    "pagecount": total_pages,
+                    "limit": len(videos),
+                    "total": total_pages * len(videos) if videos else 0
+                }
+            else:
+                # 如果未提取到NEXT_DATA，直接解析HTML
+                soup = BeautifulSoup(html_content, 'html.parser')
+                book_items = soup.select('.book-item, .card, [data-bookid]')
+                
+                for item in book_items:
+                    # 提取链接获取ID
+                    href = item.get('href', '')
+                    book_id = None
+                    
+                    match = re.search(r'/episode/(\d+)', href)
+                    if match:
+                        book_id = match.group(1)
+                    else:
+                        book_id = item.get('data-bookid', '')
+                    
+                    if not book_id:
+                        continue
+                    
+                    # 查找标题
+                    title_elem = item.select_one('.title, h3, h2, .book-name')
+                    title = title_elem.text.strip() if title_elem else "未知标题"
+                    
+                    # 查找图片
+                    img_elem = item.select_one('img')
+                    img_url = img_elem.get('src', '') if img_elem else ""
+                    
+                    # 查找备注信息
+                    remark_elem = item.select_one('.remark, .status, .episode')
+                    remark = remark_elem.text.strip() if remark_elem else ""
+                    
+                    if book_id and title:
+                        videos.append({
+                            "vod_id": book_id,
+                            "vod_name": title,
+                            "vod_pic": img_url,
+                            "vod_remarks": remark
+                        })
+                
+                # 构建返回结果
+                result = {
+                    "list": videos,
+                    "page": int(pg),
+                    "pagecount": 1,  # 无法获取总页数时默认为1
+                    "limit": len(videos),
+                    "total": len(videos)
+                }
         
         except Exception as e:
             print(f"获取分类内容出错: {e}")
