@@ -9,7 +9,6 @@ import random
 class Spider():
     def __init__(self):
         self.site = "河马剧场"
-        self.domain = "kuaikaw.cn"
         self.siteUrl = "https://www.kuaikaw.cn"
         self.nextData = None  # 缓存NEXT_DATA数据
         self.cateManual = {
@@ -161,7 +160,7 @@ class Spider():
                     seen.add(video["vod_id"])
                     unique_videos.append(video)
             
-            videos = unique_videos[:30]  # 只保留前30个
+            videos = unique_videos
         
         except Exception as e:
             print(f"获取首页推荐内容出错: {e}")
@@ -183,7 +182,6 @@ class Spider():
         # 网站分类路径已变更，使用搜索接口进行替代
         # 根据分类ID构建搜索查询
         search_key = tid
-        search_key = "青春"
         
         # 使用分类名称作为搜索关键词
         for name, id_ in self.cateManual.items():
@@ -230,12 +228,19 @@ class Spider():
                         })
                 
                 # 构建返回结果
+                # result = {
+                #     "list": videos,
+                #     "page": int(current_page),
+                #     "pagecount": total_pages,
+                #     "limit": len(videos),
+                #     "total": total_pages * len(videos) if videos else 0
+                # }
                 result = {
                     "list": videos,
-                    "page": int(current_page),
-                    "pagecount": total_pages,
-                    "limit": len(videos),
-                    "total": total_pages * len(videos) if videos else 0
+                    "page": pg,
+                    "pagecount": 9999,
+                    "limit": 90,
+                    "total": 999999
                 }
             else:
                 # 如果未提取到NEXT_DATA，直接解析HTML
@@ -277,12 +282,19 @@ class Spider():
                         })
                 
                 # 构建返回结果
+                # result = {
+                #     "list": videos,
+                #     "page": int(pg),
+                #     "pagecount": 1,  # 无法获取总页数时默认为1
+                #     "limit": len(videos),
+                #     "total": len(videos)
+                # }
                 result = {
                     "list": videos,
-                    "page": int(pg),
-                    "pagecount": 1,  # 无法获取总页数时默认为1
-                    "limit": len(videos),
-                    "total": len(videos)
+                    "page": pg,
+                    "pagecount": 9999,
+                    "limit": 90,
+                    "total": 999999
                 }
         
         except Exception as e:
