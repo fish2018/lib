@@ -10,7 +10,7 @@ class Spider():
     def __init__(self):
         self.site = "河马剧场"
         self.domain = "kuaikaw.cn"
-        self.api = "https://www.kuaikaw.cn"
+        self.siteUrl = "https://www.kuaikaw.cn"
         self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
         self.nextData = None  # 缓存NEXT_DATA数据
         self.cateManual = {}
@@ -23,7 +23,7 @@ class Spider():
         # 初始化爬虫
         headers = {
             "User-Agent": self.ua,
-            "Referer": f"{self.api}/"
+            "Referer": f"{self.siteUrl}/"
         }
         
         # 初始化分类列表 (根据网站最新分类数据)
@@ -63,10 +63,10 @@ class Spider():
     
     def homeVideoContent(self):
         """获取首页推荐视频内容"""
-        url = self.api
+        url = self.siteUrl
         headers = {
             "User-Agent": self.ua,
-            "Referer": f"{self.api}/"
+            "Referer": f"{self.siteUrl}/"
         }
         
         videos = []
@@ -190,11 +190,11 @@ class Spider():
                 break
         
         # 使用搜索接口获取分类内容
-        url = f"{self.api}/search?searchValue={urllib.parse.quote(search_key)}&page={pg}"
+        url = f"{self.siteUrl}/search?searchValue={urllib.parse.quote(search_key)}&page={pg}"
         
         headers = {
             "User-Agent": self.ua,
-            "Referer": f"{self.api}/"
+            "Referer": f"{self.siteUrl}/"
         }
         
         try:
@@ -306,11 +306,11 @@ class Spider():
         # URL编码搜索关键词
         encoded_key = urllib.parse.quote(key)
         # 获取第一页结果，并检查总页数
-        url = f"{self.api}/search?searchValue={encoded_key}&page=1"
+        url = f"{self.siteUrl}/search?searchValue={encoded_key}&page=1"
         
         headers = {
             "User-Agent": self.ua,
-            "Referer": f"{self.api}/"
+            "Referer": f"{self.siteUrl}/"
         }
         
         try:
@@ -340,7 +340,7 @@ class Spider():
                 if total_pages > 1 and not quick:  # quick模式只获取第一页
                     for page in range(2, total_pages + 1):
                         time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
-                        next_page_url = f"{self.api}/search?searchValue={encoded_key}&page={page}"
+                        next_page_url = f"{self.siteUrl}/search?searchValue={encoded_key}&page={page}"
                         next_page_response = requests.get(next_page_url, headers=headers)
                         next_page_html = next_page_response.text
                         
@@ -414,11 +414,11 @@ class Spider():
         # 获取视频详情和剧集列表
         # 传入的ids是一个列表，取第一个元素作为视频ID
         video_id = ids[0]
-        video_url = f"{self.api}/episode/{video_id}"
+        video_url = f"{self.siteUrl}/episode/{video_id}"
         
         headers = {
             "User-Agent": self.ua,
-            "Referer": f"{self.api}/"
+            "Referer": f"{self.siteUrl}/"
         }
         
         try:
@@ -458,7 +458,7 @@ class Spider():
                 if total_pages > 1:
                     for page in range(2, total_pages + 1):
                         time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
-                        next_chapter_url = f"{self.api}/episode/{video_id}?page={page}"
+                        next_chapter_url = f"{self.siteUrl}/episode/{video_id}?page={page}"
                         next_chapter_response = requests.get(next_chapter_url, headers=headers)
                         next_chapter_html = next_chapter_response.text
                         
