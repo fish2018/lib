@@ -90,76 +90,79 @@ class Spider():
             response = requests.get(url, headers=headers)
             html_content = response.text
             
-            # 提取NEXT_DATA JSON数据
-            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+            # 使用BeautifulSoup直接解析HTML提取视频信息
+            soup = BeautifulSoup(html_content, 'html.parser')
             
-            if next_data_match:
-                next_data_json = json.loads(next_data_match.group(1))
-                self.nextData = next_data_json  # 缓存数据
+            # 查找所有可能的视频项
+            # 注意：根据实际HTML结构调整选择器
+            video_items = soup.select('a[href*="/episode/"]')
+            
+            for item in video_items:
+                # 提取链接获取ID
+                href = item.get('href', '')
+                match = re.search(r'/episode/(\d+)', href)
+                if not match:
+                    continue
                 
-                # 从首页数据中提取推荐内容
-                page_props = next_data_json.get("props", {}).get("pageProps", {})
+                book_id = match.group(1)
                 
-                # 推荐剧集数据可能在不同位置，根据实际响应查找
-                recommended_books = []
+                # 查找标题
+                title_elem = item.select_one('.title, h3, h2, strong, span, div')
+                title = title_elem.text.strip() if title_elem else "未知标题"
                 
-                # 查找所有可能包含推荐剧集的字段
-                if "hotBooks" in page_props:
-                    recommended_books.extend(page_props["hotBooks"])
-                if "newBooks" in page_props:
-                    recommended_books.extend(page_props["newBooks"])
-                if "recommendBooks" in page_props:
-                    recommended_books.extend(page_props["recommendBooks"])
-                if "bookList" in page_props:
-                    recommended_books.extend(page_props["bookList"])
+                # 查找图片
+                img_elem = item.select_one('img')
+                img_url = img_elem.get('src', '') if img_elem else ""
+                
+                # 查找备注信息（集数、状态等）
+                remark_elem = item.select_one('.remark, .status, .episode, span')
+                remark = remark_elem.text.strip() if remark_elem else ""
+                
+                if book_id and title:
+                    videos.append({
+                        "vod_id": book_id,
+                        "vod_name": title,
+                        "vod_pic": img_url,
+                        "vod_remarks": remark
+                    })
+            
+            # 如果未提取到视频，尝试从NEXT_DATA中获取
+            if not videos:
+                # 提取NEXT_DATA JSON数据
+                next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+                next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+                
+                if next_data_match:
+                    next_data_json = json.loads(next_data_match.group(1))
+                    page_props = next_data_json.get("props", {}).get("pageProps", {})
                     
-                # 如果找不到，直接从页面提取信息
-                if not recommended_books:
-                    # 使用BeautifulSoup从HTML中提取
-                    soup = BeautifulSoup(html_content, 'html.parser')
-                    drama_items = soup.select('.drama-item')
-                    
-                    for item in drama_items[:20]:  # 只取前20个
-                        title_elem = item.select_one('.drama-title')
-                        link_elem = item.select_one('a')
-                        img_elem = item.select_one('img')
-                        
-                        if title_elem and link_elem and img_elem:
-                            title = title_elem.text.strip()
-                            link = link_elem.get('href', '')
-                            image = img_elem.get('src', '')
-                            
-                            # 提取ID
-                            book_id = ""
-                            if link:
-                                match = re.search(r'/episode/(\d+)', link)
-                                if match:
-                                    book_id = match.group(1)
-                            
-                            if book_id:
-                                videos.append({
-                                    "vod_id": book_id,
-                                    "vod_name": title,
-                                    "vod_pic": image,
-                                    "vod_remarks": ""
-                                })
-                
-                # 处理从JSON中提取的推荐剧集
-                for book in recommended_books:
-                    book_id = book.get("bookId", "")
-                    book_name = book.get("bookName", "")
-                    cover_url = book.get("coverWap", "")
-                    total_chapters = book.get("totalChapterNum", "")
-                    status_desc = book.get("statusDesc", "")
-                    
-                    if book_id:
-                        videos.append({
-                            "vod_id": book_id,
-                            "vod_name": book_name,
-                            "vod_pic": cover_url,
-                            "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
-                        })
+                    # 尝试从各种可能的字段获取视频列表
+                    for field in ["hotBooks", "newBooks", "recommendBooks", "bookList"]:
+                        if field in page_props and isinstance(page_props[field], list):
+                            for book in page_props[field]:
+                                book_id = book.get("bookId", "")
+                                book_name = book.get("bookName", "")
+                                cover_url = book.get("coverWap", "")
+                                status = book.get("statusDesc", "")
+                                total_chapters = book.get("totalChapterNum", "")
+                                
+                                if book_id and book_name:
+                                    videos.append({
+                                        "vod_id": book_id,
+                                        "vod_name": book_name,
+                                        "vod_pic": cover_url,
+                                        "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
+                                    })
+            
+            # 去重
+            seen = set()
+            unique_videos = []
+            for video in videos:
+                if video["vod_id"] not in seen:
+                    seen.add(video["vod_id"])
+                    unique_videos.append(video)
+            
+            videos = unique_videos[:30]  # 只保留前30个
         
         except Exception as e:
             print(f"获取首页推荐内容出错: {e}")
@@ -214,94 +217,114 @@ class Spider():
             response = requests.get(full_url, headers=headers)
             html_content = response.text
             
-            # 提取NEXT_DATA JSON数据
-            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+            # 使用BeautifulSoup直接解析HTML
+            soup = BeautifulSoup(html_content, 'html.parser')
             
-            if next_data_match:
-                next_data_json = json.loads(next_data_match.group(1))
-                page_props = next_data_json.get("props", {}).get("pageProps", {})
+            # 查找所有视频项
+            video_items = soup.select('a[href*="/episode/"]')
+            
+            for item in video_items:
+                # 提取链接获取ID
+                href = item.get('href', '')
+                match = re.search(r'/episode/(\d+)', href)
+                if not match:
+                    continue
                 
-                # 获取剧集列表
-                book_list = page_props.get("bookList", [])
+                book_id = match.group(1)
                 
-                # 获取总页数
-                total_pages = page_props.get("pages", 1)
+                # 查找标题
+                title_elem = item.select_one('.title, h3, h2, strong, span, div')
+                title = title_elem.text.strip() if title_elem else "未知标题"
                 
-                # 转换为统一的视频项格式
-                for book in book_list:
-                    book_id = book.get("bookId", "")
-                    book_name = book.get("bookName", "")
-                    cover_url = book.get("coverWap", "")
-                    total_chapters = book.get("totalChapterNum", "")
-                    status_desc = book.get("statusDesc", "")
+                # 查找图片
+                img_elem = item.select_one('img')
+                img_url = img_elem.get('src', '') if img_elem else ""
+                
+                # 查找备注信息（集数、状态等）
+                remark_elem = item.select_one('.remark, .status, .episode, span')
+                remark = remark_elem.text.strip() if remark_elem else ""
+                
+                if book_id and title:
+                    videos.append({
+                        "vod_id": book_id,
+                        "vod_name": title,
+                        "vod_pic": img_url,
+                        "vod_remarks": remark
+                    })
+            
+            # 如果未提取到视频，尝试从NEXT_DATA中获取
+            if not videos:
+                # 提取NEXT_DATA JSON数据
+                next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+                next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+                
+                if next_data_match:
+                    next_data_json = json.loads(next_data_match.group(1))
+                    page_props = next_data_json.get("props", {}).get("pageProps", {})
                     
-                    if book_id:
-                        videos.append({
-                            "vod_id": book_id,
-                            "vod_name": book_name,
-                            "vod_pic": cover_url,
-                            "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
-                        })
-                
-                result = {
-                    "list": videos,
-                    "page": pg,
-                    "pagecount": total_pages,
-                    "limit": len(videos),
-                    "total": total_pages * len(videos)
-                }
-            else:
-                # 如果无法提取JSON数据，尝试使用BeautifulSoup解析HTML
-                soup = BeautifulSoup(html_content, 'html.parser')
-                drama_items = soup.select('.drama-item')
-                
-                for item in drama_items:
-                    title_elem = item.select_one('.drama-title')
-                    link_elem = item.select_one('a')
-                    img_elem = item.select_one('img')
+                    # 获取剧集列表
+                    book_list = page_props.get("bookList", [])
                     
-                    if title_elem and link_elem and img_elem:
-                        title = title_elem.text.strip()
-                        link = link_elem.get('href', '')
-                        image = img_elem.get('src', '')
-                        
-                        # 提取ID
-                        book_id = ""
-                        if link:
-                            match = re.search(r'/episode/(\d+)', link)
-                            if match:
-                                book_id = match.group(1)
+                    # 获取总页数
+                    total_pages = page_props.get("pages", 1)
+                    
+                    # 转换为统一的视频项格式
+                    for book in book_list:
+                        book_id = book.get("bookId", "")
+                        book_name = book.get("bookName", "")
+                        cover_url = book.get("coverWap", "")
+                        total_chapters = book.get("totalChapterNum", "")
+                        status_desc = book.get("statusDesc", "")
                         
                         if book_id:
                             videos.append({
                                 "vod_id": book_id,
-                                "vod_name": title,
-                                "vod_pic": image,
-                                "vod_remarks": ""
+                                "vod_name": book_name,
+                                "vod_pic": cover_url,
+                                "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
                             })
-                
-                # 尝试提取分页信息
-                pagination = soup.select_one('.pagination')
-                total_pages = 1
-                if pagination:
-                    last_page = pagination.select('a')[-1]
-                    if last_page and last_page.text.isdigit():
-                        total_pages = int(last_page.text)
-                
-                result = {
-                    "list": videos,
-                    "page": pg,
-                    "pagecount": total_pages,
-                    "limit": len(videos),
-                    "total": total_pages * len(videos)
-                }
+            
+            # 去重
+            seen = set()
+            unique_videos = []
+            for video in videos:
+                if video["vod_id"] not in seen:
+                    seen.add(video["vod_id"])
+                    unique_videos.append(video)
+            
+            videos = unique_videos
+            
+            # 尝试提取分页信息
+            pagination = soup.select_one('.pagination')
+            total_pages = 1
+            if pagination:
+                page_links = pagination.select('a')
+                if page_links:
+                    last_page = page_links[-1].text.strip()
+                    if last_page.isdigit():
+                        total_pages = int(last_page)
+            
+            # 如果没有找到分页信息，但在NEXT_DATA中有pages字段
+            if total_pages == 1 and next_data_match:
+                next_data_json = json.loads(next_data_match.group(1))
+                page_props = next_data_json.get("props", {}).get("pageProps", {})
+                if page_props and "pages" in page_props:
+                    total_pages = page_props.get("pages", 1)
+            
+            # 构建返回结果
+            result = {
+                "list": videos,
+                "page": int(pg),
+                "pagecount": total_pages,
+                "limit": len(videos),
+                "total": total_pages * len(videos) if videos else 0
+            }
         
         except Exception as e:
             print(f"获取分类内容出错: {e}")
             result = {
                 "list": [],
-                "page": pg,
+                "page": int(pg),
                 "pagecount": 1,
                 "limit": 0,
                 "total": 0
@@ -376,6 +399,40 @@ class Spider():
                         "vod_remarks": f"{status_desc} {total_chapters}集"
                     }
                     search_results.append(vod)
+            
+            # 如果未提取到结果，尝试直接从HTML解析
+            if not search_results:
+                soup = BeautifulSoup(html_content, 'html.parser')
+                video_items = soup.select('a[href*="/episode/"]')
+                
+                for item in video_items:
+                    # 提取链接获取ID
+                    href = item.get('href', '')
+                    match = re.search(r'/episode/(\d+)', href)
+                    if not match:
+                        continue
+                    
+                    book_id = match.group(1)
+                    
+                    # 查找标题
+                    title_elem = item.select_one('.title, h3, h2, strong, span, div')
+                    title = title_elem.text.strip() if title_elem else "未知标题"
+                    
+                    # 查找图片
+                    img_elem = item.select_one('img')
+                    img_url = img_elem.get('src', '') if img_elem else ""
+                    
+                    # 查找备注信息（集数、状态等）
+                    remark_elem = item.select_one('.remark, .status, .episode, span')
+                    remark = remark_elem.text.strip() if remark_elem else ""
+                    
+                    if book_id and title:
+                        search_results.append({
+                            "vod_id": book_id,
+                            "vod_name": title,
+                            "vod_pic": img_url,
+                            "vod_remarks": remark
+                        })
         
         except Exception as e:
             print(f"搜索出错: {e}")
@@ -491,6 +548,43 @@ class Spider():
                 
                 result = {
                     "list": [vod]
+                }
+                return result
+            
+            # 如果无法从JSON提取，尝试从HTML中解析基本信息
+            else:
+                soup = BeautifulSoup(html_content, 'html.parser')
+                title_elem = soup.select_one('h1, .title, .drama-title')
+                book_name = title_elem.text.strip() if title_elem else "未知剧集"
+                
+                # 尝试提取图片
+                img_elem = soup.select_one('.poster img, .cover img, img')
+                cover_url = img_elem.get('src', '') if img_elem else ""
+                
+                # 尝试提取简介
+                intro_elem = soup.select_one('.introduction, .desc, .summary')
+                introduction = intro_elem.text.strip() if intro_elem else ""
+                
+                # 尝试提取演员
+                actor_elem = soup.select_one('.actor, .cast')
+                actor_text = actor_elem.text.strip() if actor_elem else ""
+                
+                # 视频默认只有第一集
+                result = {
+                    "list": [{
+                        "vod_id": video_id,
+                        "vod_name": book_name,
+                        "vod_pic": cover_url,
+                        "type_name": "",
+                        "vod_year": "",
+                        "vod_area": "中国大陆",
+                        "vod_remarks": "",
+                        "vod_actor": actor_text,
+                        "vod_director": "",
+                        "vod_content": introduction,
+                        "vod_play_from": "河马剧场",
+                        "vod_play_url": ""
+                    }]
                 }
                 return result
         
