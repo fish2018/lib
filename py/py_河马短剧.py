@@ -28,8 +28,8 @@ class Spider():
         
         # 初始化分类列表 (根据网站最新分类数据)
         self.cateManual = {
-            "首页": "/browse",
-            # "青春": "青春",
+            "首页": "home",
+            "青春": "青春",
             # "民国": "民国",
             # "萌宝": "萌宝",
             # "超能": "超能",
@@ -93,7 +93,6 @@ class Spider():
                         
                         if book_id and book_name:
                             videos.append({
-                                # "vod_id": book_id,
                                 "vod_id": f"/drama/{book_id}",
                                 "vod_name": book_name,
                                 "vod_pic": cover_url,
@@ -113,7 +112,6 @@ class Spider():
                             
                             if book_id and book_name:
                                 videos.append({
-                                    # "vod_id": book_id,
                                     "vod_id": f"/drama/{book_id}",
                                     "vod_name": book_name,
                                     "vod_pic": cover_url,
@@ -142,7 +140,6 @@ class Spider():
                     
                     if book_id and title:
                         videos.append({
-                            # "vod_id": book_id,
                             "vod_id": f"/drama/{book_id}",
                             "vod_name": title,
                             "vod_pic": img_url,
@@ -179,6 +176,7 @@ class Spider():
         # 网站分类路径已变更，使用搜索接口进行替代
         # 根据分类ID构建搜索查询
         search_key = tid
+        search_key = "青春"
         
         # 使用分类名称作为搜索关键词
         for name, id_ in self.cateManual.items():
