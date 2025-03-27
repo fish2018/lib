@@ -31,7 +31,7 @@ class Spider():
         return "河马短剧"
     
     def init(self, extend=""):                
-        return {}
+        return
     
     def fetch(self, url, headers=None):
         """统一的网络请求接口"""
@@ -51,7 +51,19 @@ class Spider():
             print(f"请求异常: {url}, 错误: {str(e)}")
             return None
     
-    def homeContent(self, filter=False):
+    def isVideoFormat(self, url):
+        # 检查是否为视频格式
+        video_formats = ['.mp4', '.mkv', '.avi', '.wmv', '.m3u8', '.flv', '.rmvb']
+        for format in video_formats:
+            if format in url.lower():
+                return True
+        return False
+    
+    def manualVideoCheck(self):
+        # 不需要手动检查
+        return False
+    
+    def homeContent(self, filter):
         """获取首页分类及筛选"""
         # result = {}
         # # 分类列表，使用已初始化的cateManual
@@ -323,112 +335,6 @@ class Spider():
         
         return result
     
-    def searchContent(self, key, quick=False):
-        # 搜索功能
-        search_results = []
-        # URL编码搜索关键词
-        encoded_key = urllib.parse.quote(key)
-        # 获取第一页结果，并检查总页数
-        url = f"{self.siteUrl}/search?searchValue={encoded_key}&page=1"
-        try:
-            response = self.fetch(url)
-            html_content = response.text
-            
-            # 提取NEXT_DATA JSON数据
-            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
-            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
-            
-            if next_data_match:
-                next_data_json = json.loads(next_data_match.group(1))
-                page_props = next_data_json.get("props", {}).get("pageProps", {})
-                
-                # 获取总页数
-                current_page = page_props.get("page", 1)
-                total_pages = page_props.get("pages", 1)
-                
-                # 处理所有页的数据
-                all_book_list = []
-                
-                # 添加第一页的书籍列表
-                book_list = page_props.get("bookList", [])
-                all_book_list.extend(book_list)
-                
-                # 如果有多页，获取其他页的数据
-                if total_pages > 1 and not quick:  # quick模式只获取第一页
-                    for page in range(2, total_pages + 1):
-                        time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
-                        next_page_url = f"{self.siteUrl}/search?searchValue={encoded_key}&page={page}"
-                        next_page_response = self.fetch(next_page_url)
-                        next_page_html = next_page_response.text
-                        
-                        next_page_match = re.search(next_data_pattern, next_page_html, re.DOTALL)
-                        if next_page_match:
-                            next_page_json = json.loads(next_page_match.group(1))
-                            next_page_props = next_page_json.get("props", {}).get("pageProps", {})
-                            next_page_books = next_page_props.get("bookList", [])
-                            all_book_list.extend(next_page_books)
-                
-                # 转换为统一的搜索结果格式
-                for book in all_book_list:
-                    book_id = book.get("bookId", "")
-                    book_name = book.get("bookName", "")
-                    cover_url = book.get("coverWap", "")
-                    total_chapters = book.get("totalChapterNum", "0")
-                    status_desc = book.get("statusDesc", "")
-                    
-                    # 构建视频项
-                    vod = {
-                        "vod_id": f"/drama/{book_id}",
-                        "vod_name": book_name,
-                        "vod_pic": cover_url,
-                        "vod_remarks": f"{status_desc} {total_chapters}集"
-                    }
-                    search_results.append(vod)
-            
-            # 如果未提取到结果，尝试直接从HTML解析
-            if not search_results:
-                soup = BeautifulSoup(html_content, 'html.parser')
-                video_items = soup.select('a[href*="/episode/"]')
-                
-                for item in video_items:
-                    # 提取链接获取ID
-                    href = item.get('href', '')
-                    match = re.search(r'/episode/(\d+)', href)
-                    if not match:
-                        continue
-                    
-                    book_id = match.group(1)
-                    
-                    # 查找标题
-                    title_elem = item.select_one('.title, h3, h2, strong, span, div')
-                    title = title_elem.text.strip() if title_elem else "未知标题"
-                    
-                    # 查找图片
-                    img_elem = item.select_one('img')
-                    img_url = img_elem.get('src', '') if img_elem else ""
-                    
-                    # 查找备注信息（集数、状态等）
-                    remark_elem = item.select_one('.remark, .status, .episode, span')
-                    remark = remark_elem.text.strip() if remark_elem else ""
-                    
-                    if book_id and title:
-                        search_results.append({
-                            "vod_id": f"/drama/{book_id}",
-                            "vod_name": title,
-                            "vod_pic": img_url,
-                            "vod_remarks": remark
-                        })
-        
-        except Exception as e:
-            print(f"搜索出错: {e}")
-        
-        result = {
-            "list": search_results,
-            "page": 1
-        }
-        print(result)
-        return result
-    
     def detailContent(self, ids):
         # 获取视频详情和剧集列表
         # 传入的ids是一个列表，取第一个元素作为视频ID
@@ -575,6 +481,115 @@ class Spider():
         
         return {"list": []}
     
+    def searchContent(self, key, quick, pg=1):
+        # 搜索功能
+        search_results = []
+        # URL编码搜索关键词
+        encoded_key = urllib.parse.quote(key)
+        # 获取第一页结果，并检查总页数
+        url = f"{self.siteUrl}/search?searchValue={encoded_key}&page=1"
+        try:
+            response = self.fetch(url)
+            html_content = response.text
+            
+            # 提取NEXT_DATA JSON数据
+            next_data_pattern = r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>'
+            next_data_match = re.search(next_data_pattern, html_content, re.DOTALL)
+            
+            if next_data_match:
+                next_data_json = json.loads(next_data_match.group(1))
+                page_props = next_data_json.get("props", {}).get("pageProps", {})
+                
+                # 获取总页数
+                current_page = page_props.get("page", 1)
+                total_pages = page_props.get("pages", 1)
+                
+                # 处理所有页的数据
+                all_book_list = []
+                
+                # 添加第一页的书籍列表
+                book_list = page_props.get("bookList", [])
+                all_book_list.extend(book_list)
+                
+                # 如果有多页，获取其他页的数据
+                if total_pages > 1 and not quick:  # quick模式只获取第一页
+                    for page in range(2, total_pages + 1):
+                        time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
+                        next_page_url = f"{self.siteUrl}/search?searchValue={encoded_key}&page={page}"
+                        next_page_response = self.fetch(next_page_url)
+                        next_page_html = next_page_response.text
+                        
+                        next_page_match = re.search(next_data_pattern, next_page_html, re.DOTALL)
+                        if next_page_match:
+                            next_page_json = json.loads(next_page_match.group(1))
+                            next_page_props = next_page_json.get("props", {}).get("pageProps", {})
+                            next_page_books = next_page_props.get("bookList", [])
+                            all_book_list.extend(next_page_books)
+                
+                # 转换为统一的搜索结果格式
+                for book in all_book_list:
+                    book_id = book.get("bookId", "")
+                    book_name = book.get("bookName", "")
+                    cover_url = book.get("coverWap", "")
+                    total_chapters = book.get("totalChapterNum", "0")
+                    status_desc = book.get("statusDesc", "")
+                    
+                    # 构建视频项
+                    vod = {
+                        "vod_id": f"/drama/{book_id}",
+                        "vod_name": book_name,
+                        "vod_pic": cover_url,
+                        "vod_remarks": f"{status_desc} {total_chapters}集"
+                    }
+                    search_results.append(vod)
+            
+            # 如果未提取到结果，尝试直接从HTML解析
+            if not search_results:
+                soup = BeautifulSoup(html_content, 'html.parser')
+                video_items = soup.select('a[href*="/episode/"]')
+                
+                for item in video_items:
+                    # 提取链接获取ID
+                    href = item.get('href', '')
+                    match = re.search(r'/episode/(\d+)', href)
+                    if not match:
+                        continue
+                    
+                    book_id = match.group(1)
+                    
+                    # 查找标题
+                    title_elem = item.select_one('.title, h3, h2, strong, span, div')
+                    title = title_elem.text.strip() if title_elem else "未知标题"
+                    
+                    # 查找图片
+                    img_elem = item.select_one('img')
+                    img_url = img_elem.get('src', '') if img_elem else ""
+                    
+                    # 查找备注信息（集数、状态等）
+                    remark_elem = item.select_one('.remark, .status, .episode, span')
+                    remark = remark_elem.text.strip() if remark_elem else ""
+                    
+                    if book_id and title:
+                        search_results.append({
+                            "vod_id": f"/drama/{book_id}",
+                            "vod_name": title,
+                            "vod_pic": img_url,
+                            "vod_remarks": remark
+                        })
+        
+        except Exception as e:
+            print(f"搜索出错: {e}")
+        
+        result = {
+            "list": search_results,
+            "page": 1
+        }
+        print(result)
+        return result
+    
+    def searchContentPage(self, key, quick, pg=1):
+        return self.searchContent(key, quick, pg)
+    
     def playerContent(self, flag, id, vipFlags):
         # 播放器内容获取
         # 直接返回解析好的MP4 URL
@@ -612,18 +627,10 @@ class Spider():
         }
         return result
     
-    def isVideoFormat(self, url):
-        # 检查是否为视频格式
-        video_formats = ['.mp4', '.mkv', '.avi', '.wmv', '.m3u8', '.flv', '.rmvb']
-        for format in video_formats:
-            if format in url.lower():
-                return True
-        return False
-    
     def localProxy(self, param):
         # 本地代理处理，此处简单返回传入的参数
         return [200, "video/MP2T", {}, param]
 
-def newSpider():
-    # 创建爬虫实例的工厂方法
-    return Spider() 
+    def destroy(self):
+        # 资源回收
+        pass 
