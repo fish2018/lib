@@ -177,7 +177,8 @@ class Spider():
                     
                     if book_id and title:
                         videos.append({
-                            "vod_id": book_id,
+                            # "vod_id": book_id,
+                            "vod_id": f"/{book_id}",
                             "vod_name": title,
                             "vod_pic": img_url,
                             "vod_remarks": remark
