@@ -13,20 +13,6 @@ class Spider():
         self.siteUrl = "https://www.kuaikaw.cn"
         self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
         self.nextData = None  # 缓存NEXT_DATA数据
-        self.cateManual = {}
-
-    def getName(self):
-        # 返回爬虫名称
-        return "河马短剧"
-    
-    def init(self, extend=""):
-        # 初始化爬虫
-        headers = {
-            "User-Agent": self.ua,
-            "Referer": f"{self.siteUrl}/"
-        }
-        
-        # 初始化分类列表 (根据网站最新分类数据)
         self.cateManual = {
             "首页": "home",
             "青春": "青春",
@@ -41,7 +27,12 @@ class Spider():
             # "悬疑": "悬疑",
             # "创业": "创业"
         }
-        
+
+    def getName(self):
+        # 返回爬虫名称
+        return "河马短剧"
+    
+    def init(self, extend=""):                
         return {}
     
     def homeContent(self, filter=False):
@@ -55,7 +46,11 @@ class Spider():
                 'type_id': self.cateManual[k]
             })
         result['class'] = classes
-        
+        # 获取首页推荐视频
+        try:
+            result['list'] = self.homeVideoContent()['list']
+        except:
+            result['list'] = []
         return result
     
     def homeVideoContent(self):
