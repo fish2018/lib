@@ -65,7 +65,6 @@ class Spider():
             "User-Agent": self.ua,
             "Referer": f"{self.siteUrl}/"
         }
-        
         videos = []
         try:
             response = requests.get(url, headers=headers)
@@ -221,7 +220,7 @@ class Spider():
                     
                     if book_id and book_name:
                         videos.append({
-                            "vod_id": book_id,
+                            "vod_id": f"/drama/{book_id}",
                             "vod_name": book_name,
                             "vod_pic": cover_url,
                             "vod_remarks": f"{status_desc} {total_chapters}集" if total_chapters else status_desc
@@ -268,7 +267,7 @@ class Spider():
                     
                     if book_id and title:
                         videos.append({
-                            "vod_id": book_id,
+                            "vod_id": f"/drama/{book_id}",
                             "vod_name": title,
                             "vod_pic": img_url,
                             "vod_remarks": remark
@@ -302,7 +301,6 @@ class Spider():
         encoded_key = urllib.parse.quote(key)
         # 获取第一页结果，并检查总页数
         url = f"{self.siteUrl}/search?searchValue={encoded_key}&page=1"
-        
         headers = {
             "User-Agent": self.ua,
             "Referer": f"{self.siteUrl}/"
@@ -356,7 +354,7 @@ class Spider():
                     
                     # 构建视频项
                     vod = {
-                        "vod_id": book_id,
+                        "vod_id": f"/drama/{book_id}",
                         "vod_name": book_name,
                         "vod_pic": cover_url,
                         "vod_remarks": f"{status_desc} {total_chapters}集"
@@ -391,7 +389,7 @@ class Spider():
                     
                     if book_id and title:
                         search_results.append({
-                            "vod_id": book_id,
+                            "vod_id": f"/drama/{book_id}",
                             "vod_name": title,
                             "vod_pic": img_url,
                             "vod_remarks": remark
@@ -401,8 +399,10 @@ class Spider():
             print(f"搜索出错: {e}")
         
         result = {
-            "list": search_results
+            "list": search_results,
+            "page": 1
         }
+        print(result)
         return result
     
     def detailContent(self, ids):
