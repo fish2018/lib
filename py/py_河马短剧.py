@@ -8,7 +8,6 @@ import random
 
 class Spider():
     def __init__(self):
-        self.site = "河马剧场"
         self.siteUrl = "https://www.kuaikaw.cn"
         self.nextData = None  # 缓存NEXT_DATA数据
         self.cateManual = {
@@ -65,7 +64,7 @@ class Spider():
     
     def homeContent(self, filter):
         """获取首页分类及筛选"""
-        # result = {}
+        result = {}
         # # 分类列表，使用已初始化的cateManual
         # classes = []
         # for k in self.cateManual:
