@@ -11,7 +11,6 @@ class Spider():
         self.site = "河马剧场"
         self.domain = "kuaikaw.cn"
         self.siteUrl = "https://www.kuaikaw.cn"
-        self.ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
         self.nextData = None  # 缓存NEXT_DATA数据
         self.cateManual = {
             "首页": "home",
@@ -35,6 +34,24 @@ class Spider():
     def init(self, extend=""):                
         return {}
     
+    def fetch(self, url, headers=None):
+        """统一的网络请求接口"""
+        if headers is None:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+                "Referer": self.siteUrl,
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+            }
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
+            response.raise_for_status()
+            return response
+        except Exception as e:
+            print(f"请求异常: {url}, 错误: {str(e)}")
+            return None
+    
     def homeContent(self, filter=False):
         """获取首页分类及筛选"""
         result = {}
@@ -56,13 +73,9 @@ class Spider():
     def homeVideoContent(self):
         """获取首页推荐视频内容"""
         url = self.siteUrl
-        headers = {
-            "User-Agent": self.ua,
-            "Referer": f"{self.siteUrl}/"
-        }
         videos = []
         try:
-            response = requests.get(url, headers=headers)
+            response = self.fetch(url)
             html_content = response.text
             
             # 提取NEXT_DATA JSON数据
@@ -181,13 +194,8 @@ class Spider():
         # 使用搜索接口获取分类内容
         url = f"{self.siteUrl}/search?searchValue={urllib.parse.quote(search_key)}&page={pg}"
         
-        headers = {
-            "User-Agent": self.ua,
-            "Referer": f"{self.siteUrl}/"
-        }
-        
         try:
-            response = requests.get(url, headers=headers)
+            response = self.fetch(url)
             html_content = response.text
             
             # 提取NEXT_DATA JSON数据
@@ -296,13 +304,8 @@ class Spider():
         encoded_key = urllib.parse.quote(key)
         # 获取第一页结果，并检查总页数
         url = f"{self.siteUrl}/search?searchValue={encoded_key}&page=1"
-        headers = {
-            "User-Agent": self.ua,
-            "Referer": f"{self.siteUrl}/"
-        }
-        
         try:
-            response = requests.get(url, headers=headers)
+            response = self.fetch(url)
             html_content = response.text
             
             # 提取NEXT_DATA JSON数据
@@ -329,7 +332,7 @@ class Spider():
                     for page in range(2, total_pages + 1):
                         time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
                         next_page_url = f"{self.siteUrl}/search?searchValue={encoded_key}&page={page}"
-                        next_page_response = requests.get(next_page_url, headers=headers)
+                        next_page_response = self.fetch(next_page_url)
                         next_page_html = next_page_response.text
                         
                         next_page_match = re.search(next_data_pattern, next_page_html, re.DOTALL)
@@ -406,13 +409,8 @@ class Spider():
         video_id = ids[0]
         video_url = f"{self.siteUrl}/episode/{video_id}"
         
-        headers = {
-            "User-Agent": self.ua,
-            "Referer": f"{self.siteUrl}/"
-        }
-        
         try:
-            response = requests.get(video_url, headers=headers)
+            response = self.fetch(video_url)
             html_content = response.text
             
             # 提取NEXT_DATA JSON数据
@@ -449,7 +447,7 @@ class Spider():
                     for page in range(2, total_pages + 1):
                         time.sleep(random.uniform(0.5, 1.5))  # 添加随机延迟避免频繁请求
                         next_chapter_url = f"{self.siteUrl}/episode/{video_id}?page={page}"
-                        next_chapter_response = requests.get(next_chapter_url, headers=headers)
+                        next_chapter_response = self.fetch(next_chapter_url)
                         next_chapter_html = next_chapter_response.text
                         
                         next_chapter_match = re.search(next_data_pattern, next_chapter_html, re.DOTALL)
@@ -568,7 +566,7 @@ class Spider():
                     "playUrl": "",   # 直接播放，不需要前缀
                     "url": video_url, # 直接使用MP4视频URL
                     "header": {      # 请求头
-                        "User-Agent": self.ua,
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
                         "Referer": "https://www.kuaikaw.cn/"
                     }
                 }
@@ -582,7 +580,7 @@ class Spider():
             "playUrl": "",
             "url": id,
             "header": {
-                "User-Agent": self.ua,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
                 "Referer": "https://www.kuaikaw.cn/"
             }
         }
