@@ -81,11 +81,14 @@ class Spider():
         #     result['list'] = []
 
         result = {
-            'class': [{'type_name': '首页', 'type_id': 'home'}, {'type_name': '青春', 'type_id': '青春'}], 
-            'list': [
-                {'vod_id': '/drama/41000100525', 'vod_name': '金马玉堂', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869291106.png', 'vod_remarks': '金马玉堂'}, 
-                {'vod_id': '/drama/41000101091', 'vod_name': '悬我济世', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869352225.png', 'vod_remarks': '悬我济世'}
-                ]
+            "class": [
+                {"type_name": "首页", "type_id": "home"}, 
+                {'type_name': '青春', 'type_id': "青春"}
+            ], 
+            "list": [
+                {"vod_id": "/drama/41000100525", "vod_name": "金马玉堂", "vod_pic": "https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869291106.png", "vod_remarks": "金马玉堂"}, 
+                {"vod_id": "/drama/41000101091", "vod_name": "悬我济世", "vod_pic": "https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869352225.png", "vod_remarks": "悬我济世"}
+            ]
         }     
         return result
     
@@ -189,11 +192,11 @@ class Spider():
         #     "list": videos
         # }
         result = {
-            'list': [
-                {'vod_id': '/drama/41000100525', 'vod_name': '金马玉堂', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869291106.png', 'vod_remarks': '金马玉堂'}, 
-                {'vod_id': '/drama/41000101091', 'vod_name': '悬我济世', 'vod_pic': 'https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869352225.png', 'vod_remarks': '悬我济世'}
+            "list": [
+                {"vod_id": "/drama/41000100525", "vod_name": "金马玉堂", "vod_pic": "https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869291106.png", "vod_remarks": "金马玉堂"}, 
+                {"vod_id": "/drama/41000101091", "vod_name": "悬我济世", "vod_pic": "https://seoimg.zqkanshu.com/others/seoHmjcBannerManage/date20240110/1704869352225.png", "vod_remarks": "悬我济世"}
             ]
-        } 
+        }
         return result
     
     def categoryContent(self, tid, pg, filter, extend):
