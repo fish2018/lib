@@ -74,11 +74,11 @@ class Spider():
         #         'type_id': self.cateManual[k]
         #     })
         # result['class'] = classes
-        # # 获取首页推荐视频
-        # try:
-        #     result['list'] = self.homeVideoContent()['list']
-        # except:
-        #     result['list'] = []
+        # 获取首页推荐视频
+        try:
+            result['list'] = self.homeVideoContent()['list']
+        except:
+            result['list'] = []
 
         result = {
             "class": [
@@ -94,10 +94,10 @@ class Spider():
     
     def homeVideoContent(self):
         """获取首页推荐视频内容"""
-        # url = self.siteUrl
+        url = self.siteUrl
         # videos = []
-        # try:
-        #     response = self.fetch(url)
+        try:
+            response = self.fetch(url)
         #     html_content = response.text
             
         #     # 提取NEXT_DATA JSON数据
@@ -185,8 +185,8 @@ class Spider():
             
         #     videos = unique_videos
         
-        # except Exception as e:
-        #     print(f"获取首页推荐内容出错: {e}")
+        except Exception as e:
+            print(f"获取首页推荐内容出错: {e}")
         
         # result = {
         #     "list": videos
