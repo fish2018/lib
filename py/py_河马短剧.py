@@ -59,40 +59,6 @@ class Spider():
             })
         result['class'] = classes
         
-        if filter:
-            # 筛选项，根据网站实际提供的筛选功能
-            filters = {}
-            # 全部分类页的筛选项
-            filters["all"] = [
-                {
-                    "key": "sort",
-                    "name": "排序",
-                    "value": [
-                        {"n": "最新", "v": "new"},
-                        {"n": "热播", "v": "hot"},
-                        {"n": "好评", "v": "score"}
-                    ]
-                },
-                {
-                    "key": "year",
-                    "name": "年份",
-                    "value": [
-                        {"n": "全部", "v": ""},
-                        {"n": "2024", "v": "2024"},
-                        {"n": "2023", "v": "2023"},
-                        {"n": "2022", "v": "2022"},
-                        {"n": "2021", "v": "2021"},
-                        {"n": "2020", "v": "2020"}
-                    ]
-                }
-            ]
-            # 其他分类页也使用相同的筛选
-            for cate_id in self.cateManual.values():
-                if cate_id not in ["home", "hot", "all"]:
-                    filters[cate_id] = filters["all"]
-            
-            result['filters'] = filters
-        
         return result
     
     def homeVideoContent(self):
@@ -130,7 +96,8 @@ class Spider():
                         
                         if book_id and book_name:
                             videos.append({
-                                "vod_id": book_id,
+                                # "vod_id": book_id,
+                                "vod_id": f"/drama/{book_id}",
                                 "vod_name": book_name,
                                 "vod_pic": cover_url,
                                 "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
@@ -149,7 +116,8 @@ class Spider():
                             
                             if book_id and book_name:
                                 videos.append({
-                                    "vod_id": book_id,
+                                    # "vod_id": book_id,
+                                    "vod_id": f"/drama/{book_id}",
                                     "vod_name": book_name,
                                     "vod_pic": cover_url,
                                     "vod_remarks": f"{status} {total_chapters}集" if total_chapters else status
