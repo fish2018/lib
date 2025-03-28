@@ -76,7 +76,6 @@ class Spider(Spider):
             
             if response.status_code == 200:
                 json_data = response.json()
-                # 修复：服务器返回的是"ok"而不是0
                 if json_data.get('code') == 0 or json_data.get('code') == "ok" or json_data.get('status') == 0:
                     self.token = json_data['data']['token']
                     # 设置token过期时间为1小时
