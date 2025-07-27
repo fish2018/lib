@@ -211,7 +211,7 @@ server {
 ```
 
 **配置解析**：
-*   `location /ws-goaccess`：匹配您在 `--ws-url` 中设置的路径。
+*   `location /ws`：匹配您在 `--ws-url` 中设置的路径。
 *   `proxy_pass http://127.0.0.1:7890;`：将匹配到的请求转发给在本地 `7890` 端口监听的 GoAccess 进程。
 *   `proxy_set_header Upgrade` 和 `proxy_set_header Connection`：这两行是启用 WebSocket 代理的**必要**配置。
 
