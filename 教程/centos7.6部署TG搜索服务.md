@@ -142,3 +142,50 @@ yum -y install nginx
 ```
 service nginx start
 ```
+
+---
+
+## ssl证书
+# 安装cetbot和插件
+pip3 install certbot certbot-dns-cloudflare certbot-dns-aliyun-next
+
+# 配置插件
+cloudflare
+```/etc/letsencrypt/cloudflare.ini
+dns_cloudflare_api_token=xxx
+```
+阿里云
+```/etc/letsencrypt/aliyun.ini
+dns_aliyun_next_access_key_id = xxx
+dns_aliyun_next_access_key_secret = xxx
+```
+
+# 生成ssl证书
+certbot certonly \
+  --dns-cloudflare \
+  --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
+  -d "*.252035.xyz" \
+  --preferred-challenges dns \
+  --non-interactive \
+  --agree-tos \
+  --email admin@252035.xyz \
+  --force-renewal
+
+
+sudo certbot certonly \
+  --authenticator dns-aliyun-next \
+  --dns-aliyun-next-credentials /etc/letsencrypt/aliyun.ini \
+  --dns-aliyun-next-propagation-seconds 10 \
+  -d "*.xueximeng.com" \
+  --email admin@xueximeng.com \
+  --agree-tos \
+  --non-interactive \
+  --expand \
+  --force-renewal
+  
+
+# 续签
+certbot renew
+
+# 定时任务
+00 05 01 * *  /usr/bin/certbot renew --quiet && systemctl restart openresty >> /root/logs/certbot-renew.log 2>&1
